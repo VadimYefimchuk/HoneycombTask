@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { ApplicationState } from '../store';
 import * as WeatherForecastsStore from '../store/WeatherForecasts';
 
+
 // At runtime, Redux will merge together...
 type WeatherForecastProps =
   WeatherForecastsStore.WeatherForecastsState // ... state we've requested from the Redux store
