@@ -2,13 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MainTask.Models;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using MainTask.Data;
+
 using Microsoft.Extensions.DependencyInjection;
+using MainTask.DAL;
 
 namespace MainTask
 {
@@ -23,8 +24,8 @@ namespace MainTask
                 var services = scope.ServiceProvider;
                 try
                 {
-                    var context = services.GetRequiredService<UserContext>();
-                    DbInitializer.Initialize(context);
+                    var context = services.GetRequiredService<ApplicationDbContext>();
+                    //DbInitializer.Initialize(context);
                 }
                 catch (Exception ex)
                 {
@@ -45,8 +46,8 @@ namespace MainTask
                 var services = scope.ServiceProvider;
                 try
                 {
-                    var context = services.GetRequiredService<UserContext>();
-                    DbInitializer.Initialize(context);
+                    var context = services.GetRequiredService<ApplicationDbContext>();
+                    //DbInitializer.Initialize(context);
                 }
                 catch (Exception ex)
                 {
