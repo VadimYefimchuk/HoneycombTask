@@ -4,6 +4,7 @@ import Layout from './components/Layout';
 import AdminsTable from './components/AdminsTable';
 import Counter from './components/Counter';
 import FetchData from './components/FetchData';
+import "antd/dist/antd.css";
 
 import './custom.css'
 
