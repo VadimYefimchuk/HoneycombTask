@@ -14,10 +14,10 @@ import './custom.css'
 
 export default () => (
     <Layout >
-        <Route exact path='/' component={Counter} />
+        <Route exact path='/login' component={Login} />
         <Route path='/admin' component={AdminsTable} />
         <Route path='/fetch-data/:startDateIndex?' component={FetchData} />
-        <Route path='/login' component={Login} />
+        <Route path='/counter' component={Counter} />
         <Route path='/register' component={Registration} />
         <Route path='/test' component={Test} />
     </Layout>
