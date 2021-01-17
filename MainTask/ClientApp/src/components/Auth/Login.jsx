@@ -7,17 +7,26 @@ import { Link } from 'react-router-dom';
 
 
 export default class Login extends React.Component{
-  state = {
-    username: null,
-    password: null,
-    login: false,
-    store:null
+  constructor(){
+    super();
+    this.state = {
+      username: null,
+      password: null,
+      login: false,
+      store:null
+    }
   }
 
   sendLogin = () =>{
     axios.post("https://localhost:44339/api/authenticate/login", this.state)
     .then((res) => {
-      console.log(res.data.token);
+      //console.log(res.data.token);
+      localStorage.setItem('login', JSON.stringify({
+        login: true,
+        token: res.data.token
+      }));
+      this.setState({login: true});
+      
       this.setState({username: null});
       this.setState({password: null});
     })
@@ -61,7 +70,7 @@ export default class Login extends React.Component{
         <Input type="password" size="large" placeholder="Password" value={this.state.password} prefix={<KeyOutlined />} 
         onChange={(event)=>{this.setState({password: event.target.value})}} />
         <br/><br/>
-        <Button type="primary" style={this.buttonStyle} onClick={this.sendLogin}>
+        <Button type="primary" style={this.buttonStyle} onClick={()=>{this.sendLogin()}}>
           LOGIN
         </Button>
         <br/><br/>
