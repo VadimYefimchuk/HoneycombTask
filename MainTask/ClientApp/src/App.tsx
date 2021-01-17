@@ -4,7 +4,8 @@ import Layout from './components/Layout';
 import AdminsTable from './components/AdminsTable';
 import Counter from './components/Counter';
 import FetchData from './components/FetchData';
-import Login from './components/Login';
+import Login from './components/Auth/Login';
+import Registration from './components/Auth/Registration';
 import Test from './components/Test';
 
 import "antd/dist/antd.css";
@@ -12,11 +13,12 @@ import "antd/dist/antd.css";
 import './custom.css'
 
 export default () => (
-    <Layout>
+    <Layout >
         <Route exact path='/' component={Counter} />
         <Route path='/admin' component={AdminsTable} />
         <Route path='/fetch-data/:startDateIndex?' component={FetchData} />
         <Route path='/login' component={Login} />
+        <Route path='/register' component={Registration} />
         <Route path='/test' component={Test} />
     </Layout>
 );
