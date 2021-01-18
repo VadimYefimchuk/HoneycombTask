@@ -10,20 +10,22 @@ export default class Login extends React.Component{
   constructor(){
     super();
     this.state = {
-      username: null,
-      password: null,
+      username: "Vadim",
+      password: "Qwerty@123",
       login: false,
       store:null
-    }
+    };
+    this.url = window.location.href.replace(window.location.pathname,"");
   }
 
   sendLogin = () =>{
-    axios.post("https://localhost:44339/api/authenticate/login", this.state)
+    axios.post(this.url + "/api/authenticate/login", this.state)
     .then((res) => {
-      //console.log(res.data.token);
+      console.log(res.data);
       localStorage.setItem('login', JSON.stringify({
         login: true,
-        token: res.data.token
+        token: res.data.token,
+        role: res.data.role
       }));
       this.setState({login: true});
       

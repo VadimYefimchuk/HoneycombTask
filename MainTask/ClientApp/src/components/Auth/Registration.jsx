@@ -6,16 +6,20 @@ import { Link } from 'react-router-dom';
 
 
 export default class Registration extends React.Component{
-    state = {
-        username: null,
-        email: null,
-        password: null,
-        login: false,
-        store:null
-    }
+    constructor(){
+        super();
+        this.state = {
+          username: null,
+          email: null,
+          password: null,
+          login: false,
+          store:null
+        };
+        this.url = window.location.href.replace(window.location.pathname,"");
+      }
   
     sendRegister = () =>{
-        axios.post("https://localhost:44339/api/authenticate/register", this.state)
+        axios.post(this.url + "/api/authenticate/register", this.state)
         .then((res) => {
             console.log(res.data);
             this.setState({username: null});

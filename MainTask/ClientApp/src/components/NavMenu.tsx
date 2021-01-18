@@ -8,6 +8,8 @@ export default class NavMenu extends React.PureComponent<{}, { isOpen: boolean }
         isOpen: false
     };
 
+    authData = JSON.parse(localStorage.getItem('login') || '{}');
+
     public render() {
         return (
             <header style={{backgroundColor: "gray"}}>
@@ -20,20 +22,21 @@ export default class NavMenu extends React.PureComponent<{}, { isOpen: boolean }
                                 <NavItem>
                                     <NavLink tag={Link} className="text-dark" to="/admin">Admin's table</NavLink>
                                 </NavItem>
+
                                 <NavItem>
-                                    <NavLink tag={Link} className="text-dark" to="/counter">Counter</NavLink>
+                                    <NavLink tag={Link} className="text-dark" to="/select">Select Date</NavLink>
                                 </NavItem>
-                                <NavItem>
-                                    <NavLink tag={Link} className="text-dark" to="/fetch-data">Admin data</NavLink>
-                                </NavItem>
+                                
                                 <NavItem>
                                     <NavLink tag={Link} className="text-dark" to="/login">Login</NavLink>
                                 </NavItem>
-                                <NavItem>
-                                    <NavLink tag={Link} className="text-dark" to="/test">Test</NavLink>
-                                </NavItem>
+                                
                                 <NavItem>
                                     <NavLink tag={Link} className="text-dark" to="/register">Registration</NavLink>
+                                </NavItem>
+
+                                <NavItem>
+                                    <NavLink tag={Link} className="text-dark" to="/logout">Logout</NavLink>
                                 </NavItem>
                             </ul>
                         </Collapse>

@@ -59,11 +59,16 @@ namespace JWTAuthentication.Controllers
                     signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                     );
 
+                string myRole = "Admin";
+                if (userRoles.Count == 0)
+                    myRole = "User";
+
                 return Ok(new
                 {
+                    role = myRole,
                     token = new JwtSecurityTokenHandler().WriteToken(token),
                     expiration = token.ValidTo
-                });
+                });;
             }
             return Unauthorized();
         }
