@@ -58,6 +58,7 @@ export default class Login extends React.Component{
           registeredDate:res.data.registeredDate,
           studyDate: res.data.studyDate
         }));
+        //Redirecthere
       })
       .catch((error) => {
         console.error(error)
@@ -100,7 +101,7 @@ export default class Login extends React.Component{
         onChange={(event)=>{this.setState({password: event.target.value})}} />
         <br/><br/>
         <Button type="primary" style={this.buttonStyle} onClick={()=>{this.sendLogin()}}>
-          LOGIN
+          <strong>LOGIN</strong> 
         </Button>
         <br/><br/>
         <Link to="/register">Registration</Link>

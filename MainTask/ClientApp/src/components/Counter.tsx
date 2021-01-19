@@ -21,7 +21,7 @@ class Counter extends React.PureComponent<CounterProps> {
 
                 <button type="button"
                     className="btn btn-primary btn-lg"
-                    onClick={() => { this.props.increment(); }}>
+                    onClick={() => { this.props.decrement(); }}>
                     Increment
                 </button>
             </React.Fragment>

@@ -69,7 +69,7 @@ export default class Registration extends React.Component{
                     onChange={(event)=>{this.setState({password: event.target.value})}} />
                     <br/><br/>
                     <Button type="primary" style={this.buttonStyle} onClick={this.sendRegister}>
-                        REGISTRATION
+                        <strong>REGISTRATION</strong> 
                     </Button>
                     <br/><br/>
                     <Link to="/login">Login</Link>

@@ -22,11 +22,20 @@ export default class AdminsTable extends React.Component{
     }
     else{
       <div>
-        <h1>You are not ADMIN!</h1>
+        <h1 className="text-white" style ={{"textAlign":"center"}}>You are not ADMIN!</h1>
         <hr/>
       </div>
     }
   }
+
+  mainStyle = {
+    textAlign:"center",
+    marginLeft:"auto",
+    marginRight:"auto",
+    width:"50%",
+    backgroundColor:"white", 
+    borderRadius: "20px"
+  };
 
   render(){
     var checkRole = this.authData.role == "Admin";
@@ -38,7 +47,7 @@ export default class AdminsTable extends React.Component{
         ? 
           checkRole
           ? <div>
-              <h1>Admins table</h1>
+              <h1 className="text-white" style ={{"textAlign":"center"}}>Admins table</h1>
               <hr/>
               <UserList/>
             </div>
@@ -48,7 +57,7 @@ export default class AdminsTable extends React.Component{
             </div>
         
         : <div>
-            <h1>Please AUTH (Admin page)!</h1>
+            <h1 className="text-white" style ={{"textAlign":"center"}}>Please AUTH (Admin page)!</h1>
             <hr/>
           </div>
       }

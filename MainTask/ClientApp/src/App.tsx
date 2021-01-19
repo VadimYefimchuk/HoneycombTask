@@ -9,6 +9,7 @@ import Logout from './components/Auth/Logout';
 import Registration from './components/Auth/Registration';
 import SelectDate from './components/SelectDate';
 import Profile from './components/Profile'
+import Test from './components/test'
 
 import "antd/dist/antd.css";
 
@@ -25,6 +26,6 @@ export default () => (
         <Route path='/select' component={SelectDate} />
         <Route path='/logout' component={Logout} />
         <Route path='/profile' component={Profile} />
-        
+        <Route path='/test' component={Test} />
     </Layout>
 );

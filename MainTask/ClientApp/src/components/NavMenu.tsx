@@ -9,6 +9,25 @@ export default class NavMenu extends React.PureComponent<{}, { isOpen: boolean }
     };
 
     authData = JSON.parse(localStorage.getItem('login') || '{}');
+    setLogout() {
+        localStorage.setItem('login', JSON.stringify({
+            login: null,
+            token: null,
+            role: null,
+            uName: null,
+        }));
+        localStorage.setItem('userData', JSON.stringify({
+            id: null,
+            email: null,
+            userName: null,
+            name: null,
+            lastName: null,
+            age: null,
+            registeredDate: null,
+            studyDate: null
+        }));
+        this.render();
+    }
 
     public render() {
         var checkRole = this.authData.role == "Admin";
@@ -25,7 +44,7 @@ export default class NavMenu extends React.PureComponent<{}, { isOpen: boolean }
                                 {
                                     checkLogin
                                     ?
-                                        <div style={{display: "flex"}}>
+                                        <div style={{display: "flex", fontWeight:"bolder"}}>
                                             <NavItem>
                                                 <NavLink tag={Link} className="text-white" to="/admin">Admin's table</NavLink>
                                             </NavItem>
@@ -39,17 +58,17 @@ export default class NavMenu extends React.PureComponent<{}, { isOpen: boolean }
                                             </NavItem>
 
                                             <NavItem>
-                                                <NavLink tag={Link} className="text-white" to="/logout">Logout </NavLink>
+                                                <NavLink className="text-white" onClick={()=>{this.setLogout()}}>Logout </NavLink>
                                             </NavItem>
                                         </div>
                                     :
                                         <div style={{display: "flex"}}>
                                             <NavItem>
-                                                <NavLink tag={Link} className="text-dark" to="/login">Login</NavLink>
+                                                <NavLink tag={Link} className="text-white" to="/login">Login</NavLink>
                                             </NavItem>
                                             
                                             <NavItem>
-                                                <NavLink tag={Link} className="text-dark" to="/register">Registration</NavLink>
+                                                <NavLink tag={Link} className="text-white" to="/register">Registration</NavLink>
                                             </NavItem>
                                         </div>
                                 }

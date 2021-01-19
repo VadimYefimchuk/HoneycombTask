@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
-import { Table} from 'antd';
+import {Table} from 'antd';
+import {EditFilled} from '@ant-design/icons'
 
 
 const columns = [
@@ -39,6 +40,7 @@ const columns = [
     dataIndex: 'studyDate',
     key: 'studyDate',
   },
+  
 ];
 
 
@@ -65,6 +67,7 @@ export default class PersonList extends React.Component {
   render() {
     return (
       <Table
+      //loading={loading}
       dataSource={this.state.persons} 
       columns={columns}
       />
