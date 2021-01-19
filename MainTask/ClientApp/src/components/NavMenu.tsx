@@ -11,33 +11,49 @@ export default class NavMenu extends React.PureComponent<{}, { isOpen: boolean }
     authData = JSON.parse(localStorage.getItem('login') || '{}');
 
     public render() {
+        var checkRole = this.authData.role == "Admin";
+        var checkLogin = this.authData.login;
+
         return (
-            <header style={{backgroundColor: "gray"}}>
+            <header style={{backgroundColor: "#140203"}}>
                 <Navbar className="navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3" light>
                     <Container>
-                        <NavbarBrand tag={Link} to="/login">MainTask</NavbarBrand>
+                        <NavbarBrand tag={Link} className="text-white" to="/login">MainTask</NavbarBrand>
                         <NavbarToggler onClick={this.toggle} className="mr-2"/>
                         <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={this.state.isOpen} navbar>
                             <ul className="navbar-nav flex-grow">
-                                <NavItem>
-                                    <NavLink tag={Link} className="text-dark" to="/admin">Admin's table</NavLink>
-                                </NavItem>
+                                {
+                                    checkLogin
+                                    ?
+                                        <div style={{display: "flex"}}>
+                                            <NavItem>
+                                                <NavLink tag={Link} className="text-white" to="/admin">Admin's table</NavLink>
+                                            </NavItem>
 
-                                <NavItem>
-                                    <NavLink tag={Link} className="text-dark" to="/select">Select Date</NavLink>
-                                </NavItem>
-                                
-                                <NavItem>
-                                    <NavLink tag={Link} className="text-dark" to="/login">Login</NavLink>
-                                </NavItem>
-                                
-                                <NavItem>
-                                    <NavLink tag={Link} className="text-dark" to="/register">Registration</NavLink>
-                                </NavItem>
+                                            <NavItem>
+                                                <NavLink tag={Link} className="text-white" to="/select">Select Date</NavLink>
+                                            </NavItem>
 
-                                <NavItem>
-                                    <NavLink tag={Link} className="text-dark" to="/logout">Logout</NavLink>
-                                </NavItem>
+                                            <NavItem>
+                                                <NavLink tag={Link} className="text-white" to="/profile">Profile</NavLink>
+                                            </NavItem>
+
+                                            <NavItem>
+                                                <NavLink tag={Link} className="text-white" to="/logout">Logout </NavLink>
+                                            </NavItem>
+                                        </div>
+                                    :
+                                        <div style={{display: "flex"}}>
+                                            <NavItem>
+                                                <NavLink tag={Link} className="text-dark" to="/login">Login</NavLink>
+                                            </NavItem>
+                                            
+                                            <NavItem>
+                                                <NavLink tag={Link} className="text-dark" to="/register">Registration</NavLink>
+                                            </NavItem>
+                                        </div>
+                                }
+  
                             </ul>
                         </Collapse>
                     </Container>

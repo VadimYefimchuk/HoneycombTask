@@ -63,8 +63,11 @@ namespace JWTAuthentication.Controllers
                 if (userRoles.Count == 0)
                     myRole = "User";
 
+               //var userEmail = 
+
                 return Ok(new
                 {
+                    uName = model.Username,
                     role = myRole,
                     token = new JwtSecurityTokenHandler().WriteToken(token),
                     expiration = token.ValidTo

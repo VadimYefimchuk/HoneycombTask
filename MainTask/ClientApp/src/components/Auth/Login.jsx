@@ -16,6 +16,7 @@ export default class Login extends React.Component{
       store:null
     };
     this.url = window.location.href.replace(window.location.pathname,"");
+    this.authData = null;
   }
 
   sendLogin = () =>{
@@ -25,16 +26,42 @@ export default class Login extends React.Component{
       localStorage.setItem('login', JSON.stringify({
         login: true,
         token: res.data.token,
-        role: res.data.role
+        role: res.data.role,
+        uName: res.data.uName
       }));
       this.setState({login: true});
       
       this.setState({username: null});
       this.setState({password: null});
+      this.authData = JSON.parse(localStorage.getItem('login'));
+      this.getUserInfo();
     })
     .catch((error) => {
       console.error(error)
     });
+
+  }
+
+  getUserInfo = () =>{
+    axios.get(
+      this.url + `/api/students/SearchEmail?username=` + this.authData.uName,
+      {headers:{"Authorization":"Bearer " + this.authData.token}})
+      .then(res => {
+        console.log(res.data);
+        localStorage.setItem('userData', JSON.stringify({
+          id: res.data.id,
+          email: res.data.email,
+          userName: res.data.userName,
+          name: res.data.name,
+          lastName: res.data.lastName,
+          age: res.data.age,
+          registeredDate:res.data.registeredDate,
+          studyDate: res.data.studyDate
+        }));
+      })
+      .catch((error) => {
+        console.error(error)
+      });
   }
 
   authStyle = {

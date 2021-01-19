@@ -8,6 +8,7 @@ import Login from './components/Auth/Login';
 import Logout from './components/Auth/Logout';
 import Registration from './components/Auth/Registration';
 import SelectDate from './components/SelectDate';
+import Profile from './components/Profile'
 
 import "antd/dist/antd.css";
 
@@ -15,7 +16,7 @@ import './custom.css'
 
 export default () => (
     <Layout >
-        <Route exact path='/' component={Login} />
+        <Route exact path='/' component={SelectDate} />
         <Route path='/login' component={Login} />
         <Route path='/admin' component={AdminsTable} />
         <Route path='/fetch-data/:startDateIndex?' component={FetchData} />
@@ -23,6 +24,7 @@ export default () => (
         <Route path='/register' component={Registration} />
         <Route path='/select' component={SelectDate} />
         <Route path='/logout' component={Logout} />
+        <Route path='/profile' component={Profile} />
         
     </Layout>
 );

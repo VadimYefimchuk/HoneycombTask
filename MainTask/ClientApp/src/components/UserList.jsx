@@ -43,12 +43,18 @@ const columns = [
 
 
 export default class PersonList extends React.Component {
-  state = {
-    persons: []
+  
+  constructor(){
+    super();
+    this.state = {
+      persons: []
+    }
+    this.authData = JSON.parse(localStorage.getItem('login'));
+    this.url = window.location.href.replace(window.location.pathname,"");
   }
 
   componentDidMount() {
-    axios.get(`https://localhost:44339/api/users`)
+    axios.get(this.url + `/api/students`,{headers:{"Authorization":"Bearer " + this.authData.token}})
       .then(res => {
         const persons = res.data;
         this.setState({ persons });

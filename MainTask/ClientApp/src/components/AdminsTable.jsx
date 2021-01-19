@@ -7,7 +7,7 @@ export default class AdminsTable extends React.Component{
   constructor() {
     super();
     this.authData = JSON.parse(localStorage.getItem('login'));
-    console.log(this.authData);
+    //console.log(this.authData);
   }
 
   checkRole(){
