@@ -66,10 +66,10 @@ namespace MainTask.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [Authorize]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutStudent(int id, Student student)
+        [HttpPut("{idCurrentUser}")]
+        public async Task<IActionResult> PutStudent(int idCurrentUser, Student student)
         {
-            if (id != student.Id)
+            if (idCurrentUser != student.Id)
             {
                 return BadRequest();
             }
@@ -82,7 +82,7 @@ namespace MainTask.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!StudentExists(id))
+                if (!StudentExists(idCurrentUser))
                 {
                     return NotFound();
                 }
@@ -98,7 +98,6 @@ namespace MainTask.Controllers
         // POST: api/Students
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Student>> PostStudent(Student student)
         {

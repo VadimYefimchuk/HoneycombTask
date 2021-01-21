@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Input, Button } from 'antd';
 import {UserOutlined, KeyOutlined} from '@ant-design/icons';
 import { Link } from 'react-router-dom';
+import { useHistory } from "react-router-dom";
 
 
 export default class Login extends React.Component{
@@ -17,6 +18,7 @@ export default class Login extends React.Component{
     };
     this.url = window.location.href.replace(window.location.pathname,"");
     this.authData = null;
+    //this.history = useHistory();
   }
 
   sendLogin = () =>{
@@ -58,6 +60,12 @@ export default class Login extends React.Component{
           registeredDate:res.data.registeredDate,
           studyDate: res.data.studyDate
         }));
+        
+        this.props.history.push("/select");
+        if(window.location.pathname == "/select"){
+          window.location.reload();
+        }
+        //this.history.push('/select');
         //Redirecthere
       })
       .catch((error) => {
@@ -72,35 +80,36 @@ export default class Login extends React.Component{
     width:"50%",
     backgroundColor:"white", 
     borderRadius: "20px"
-  };
+};
 
-  buttonStyle = {
+buttonStyle = {
     backgroundColor: "#241829", 
     borderRadius: "10px", 
     width:"50%"
-  };
+};
 
-  inputStyle ={
+inputStyle = {
     width:"60%",
     textAlign:"center",
     marginLeft:"auto",
     marginRight:"auto"
-  }
+}
+
 
   render(){
     return(
-    <div style={this.authStyle}>
+    <div style = {this.authStyle}>
       <h2>Login</h2>
       <p>"username": "Vadim", "password": "Qwerty@123"</p>
       <br/>
-      <div style={this.inputStyle}>
+      <div style = {this.inputStyle}>
         <Input type="text" size="large" placeholder="Nickname" value={this.state.username} prefix={<UserOutlined/>} 
         onChange={(event)=>{this.setState({username:event.target.value})}} />
         <br/><br/>
         <Input type="password" size="large" placeholder="Password" value={this.state.password} prefix={<KeyOutlined />} 
         onChange={(event)=>{this.setState({password: event.target.value})}} />
         <br/><br/>
-        <Button type="primary" style={this.buttonStyle} onClick={()=>{this.sendLogin()}}>
+        <Button type="primary" style = {this.buttonStyle} onClick={()=>{this.sendLogin()}}>
           <strong>LOGIN</strong> 
         </Button>
         <br/><br/>

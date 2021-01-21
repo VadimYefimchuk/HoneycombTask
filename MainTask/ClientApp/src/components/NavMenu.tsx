@@ -2,6 +2,8 @@ import * as React from 'react';
 import { Collapse, Container, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import './NavMenu.css';
+import { useHistory } from "react-router-dom";
+
 
 export default class NavMenu extends React.PureComponent<{}, { isOpen: boolean }> {
     public state = {
@@ -26,7 +28,7 @@ export default class NavMenu extends React.PureComponent<{}, { isOpen: boolean }
             registeredDate: null,
             studyDate: null
         }));
-        this.render();
+        window.location.reload();
     }
 
     public render() {

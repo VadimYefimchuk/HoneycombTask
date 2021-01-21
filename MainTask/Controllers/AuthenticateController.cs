@@ -54,21 +54,17 @@ namespace JWTAuthentication.Controllers
                 var token = new JwtSecurityToken(
                     issuer: _configuration["JWT:ValidIssuer"],
                     audience: _configuration["JWT:ValidAudience"],
-                    expires: DateTime.Now.AddHours(3),
+                    expires: DateTime.UtcNow.AddHours(3),
                     claims: authClaims,
                     signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                     );
 
-                string myRole = "Admin";
-                if (userRoles.Count == 0)
-                    myRole = "User";
-
-               //var userEmail = 
+                var currentUserRole = userRoles[0];
 
                 return Ok(new
                 {
                     uName = model.Username,
-                    role = myRole,
+                    role = currentUserRole,
                     token = new JwtSecurityTokenHandler().WriteToken(token),
                     expiration = token.ValidTo
                 });;
@@ -82,9 +78,11 @@ namespace JWTAuthentication.Controllers
         {
             var userExists = await userManager.FindByNameAsync(model.Username);
             if (userExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });
+            {
+                return StatusCode(StatusCodes.Status409Conflict);
+            }
 
-            ApplicationUser user = new ApplicationUser()
+            var user = new ApplicationUser
             {
                 Email = model.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
@@ -92,9 +90,21 @@ namespace JWTAuthentication.Controllers
             };
             var result = await userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+            {
+                return StatusCode(StatusCodes.Status409Conflict);
+            }
 
-            return Ok(new Response { Status = "Success", Message = "User created successfully!" });
+            if (!await roleManager.RoleExistsAsync(UserRoles.User))
+            {
+                await roleManager.CreateAsync(new IdentityRole(UserRoles.User));
+            }  
+
+            if (await roleManager.RoleExistsAsync(UserRoles.User))
+            {
+                await userManager.AddToRoleAsync(user, UserRoles.User);
+            }
+
+            return StatusCode(StatusCodes.Status200OK);
         }
 
         [HttpPost]
@@ -103,9 +113,11 @@ namespace JWTAuthentication.Controllers
         {
             var userExists = await userManager.FindByNameAsync(model.Username);
             if (userExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });
+            {
+                return StatusCode(StatusCodes.Status409Conflict);
+            }
 
-            ApplicationUser user = new ApplicationUser()
+            var user = new ApplicationUser
             {
                 Email = model.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
@@ -113,19 +125,25 @@ namespace JWTAuthentication.Controllers
             };
             var result = await userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+            {
+                return StatusCode(StatusCodes.Status409Conflict);
+            }
 
             if (!await roleManager.RoleExistsAsync(UserRoles.Admin))
+            {
                 await roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
+            }
             if (!await roleManager.RoleExistsAsync(UserRoles.User))
+            {
                 await roleManager.CreateAsync(new IdentityRole(UserRoles.User));
+            }
 
             if (await roleManager.RoleExistsAsync(UserRoles.Admin))
             {
                 await userManager.AddToRoleAsync(user, UserRoles.Admin);
             }
 
-            return Ok(new Response { Status = "Success", Message = "User created successfully!" });
+            return StatusCode(StatusCodes.Status200OK);
         }
     }
 }
