@@ -3,6 +3,8 @@ import axios from 'axios';
 import { Input, Button } from 'antd';
 import {UserOutlined, KeyOutlined, IeOutlined} from '@ant-design/icons';
 import { Link } from 'react-router-dom';
+import {areaStyle, buttonStyle, inputStyle} from '../Styles/MainFieldStyle'
+
 
 export default class Registration extends React.Component{
     constructor(){
@@ -94,34 +96,12 @@ export default class Registration extends React.Component{
           });
       }
   
-    authStyle = {
-        textAlign:"center",
-        marginLeft:"auto",
-        marginRight:"auto",
-        width:"50%",
-        backgroundColor:"white", 
-        borderRadius: "20px"
-    };
-  
-    buttonStyle = {
-        backgroundColor: "#241829", 
-        borderRadius: "10px", 
-        width:"50%"
-    };
-
-    inputStyle = {
-        width:"60%",
-        textAlign:"center",
-        marginLeft:"auto",
-        marginRight:"auto"
-    }
-  
     render(){
         return(
-            <div style={this.authStyle}>
+            <div style={areaStyle}>
                 <h2>Registration</h2>
                 <br/>
-                <div style={this.inputStyle}>
+                <div style={inputStyle}>
                     <Input type="text" size="large" placeholder="Nickname" value={this.state.username} prefix={<UserOutlined/>} 
                     onChange={(event)=>{this.setState({username:event.target.value})}} />
                     <br/><br/>
@@ -131,7 +111,7 @@ export default class Registration extends React.Component{
                     <Input type="password" size="large" placeholder="Password" value={this.state.password} prefix={<KeyOutlined />} 
                     onChange={(event)=>{this.setState({password: event.target.value})}} />
                     <br/><br/>
-                    <Button type="primary" style={this.buttonStyle} onClick={this.sendRegister}>
+                    <Button type="primary" style={buttonStyle} onClick={this.sendRegister}>
                         <strong>REGISTRATION</strong> 
                     </Button>
                     <br/><br/>

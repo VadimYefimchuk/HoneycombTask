@@ -5,6 +5,8 @@ import { DatePicker, Space } from 'antd';
 import { TimePicker, Button } from 'antd';
 import moment from 'moment';
 import axios from 'axios';
+import {areaStyle, buttonStyle, inputStyle} from './Styles/MainFieldStyle'
+
 
 export default class SelectDate extends React.Component{
 
@@ -39,44 +41,21 @@ export default class SelectDate extends React.Component{
     }
   }
 
-  dateStyle = {
-    textAlign:"center",
-    marginLeft:"auto",
-    marginRight:"auto",
-    width:"50%",
-    backgroundColor:"white", 
-    borderRadius: "20px"
-  };
-
-  buttonStyle = {
-    backgroundColor: "#241829", 
-    borderRadius: "10px", 
-    width:"50%"
-  };
-
-  inputStyle ={
-    width:"60%",
-    textAlign:"center",
-    marginLeft:"auto",
-    marginRight:"auto"
-  }
-
-
   render(){
     var checkLogin = this.authData.login;
     return(  
     <div>
       {
         checkLogin
-        ? <div style={this.dateStyle}>
+        ? <div style={areaStyle}>
             <h1 style ={{"textAlign":"center"}}>Please select date</h1>
-            <div style={this.inputStyle}>
+            <div style={inputStyle}>
             <Space direction = "horizontal">
               <DatePicker onChange={(time,dateString)=>{this.setState({date: dateString})}} format={'YYYY-MM-DD'} />
               <TimePicker onChange={(time,timeString)=>{this.setState({time: timeString})}}/> 
             </Space>
             <br/> <br/>
-            <Button type="primary" style={this.buttonStyle} onClick = {()=>{this.submitDate()}}>
+            <Button type="primary" style={buttonStyle} onClick = {()=>{this.submitDate()}}>
               <strong>SUBMIT DATE</strong>
             </Button>
             </div>

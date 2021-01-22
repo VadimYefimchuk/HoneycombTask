@@ -28,7 +28,7 @@ export default class NavMenu extends React.PureComponent<{}, { isOpen: boolean }
             registeredDate: null,
             studyDate: null
         }));
-        window.location.reload();
+        window.location.href = "/login";
     }
 
     public render() {

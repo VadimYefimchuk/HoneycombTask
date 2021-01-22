@@ -4,9 +4,9 @@ import Layout from './components/Layout';
 import AdminsTable from './components/AdminsTable';
 import Counter from './components/Counter';
 import FetchData from './components/FetchData';
-import Login from './components/Auth/Login';
-import Logout from './components/Auth/Logout';
-import Registration from './components/Auth/Registration';
+import Login from './components/Authorization/Login';
+import Logout from './components/Authorization/Logout';
+import Registration from './components/Authorization/Registration';
 import SelectDate from './components/SelectDate';
 import Profile from './components/Profile'
 import Test from './components/test'
