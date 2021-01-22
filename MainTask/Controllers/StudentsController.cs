@@ -74,6 +74,8 @@ namespace MainTask.Controllers
                 return BadRequest();
             }
 
+            student.RegisteredDate = DateTime.UtcNow;
+
             _context.Entry(student).State = EntityState.Modified;
 
             try

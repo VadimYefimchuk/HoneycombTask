@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import {Table} from 'antd';
 import {EditFilled} from '@ant-design/icons'
+import {getStudents} from '../Services/UserQuery'
 
 
 const columns = [
@@ -51,23 +52,19 @@ export default class PersonList extends React.Component {
     this.state = {
       persons: []
     }
-    this.authData = JSON.parse(localStorage.getItem('login'));
-    this.url = window.location.href.replace(window.location.pathname,"");
   }
 
-  componentDidMount() {
-    axios.get(this.url + `/api/students`,{headers:{"Authorization":"Bearer " + this.authData.token}})
-      .then(res => {
-        const persons = res.data;
-        this.setState({ persons });
-      })
+  async componentDidMount(){
+    var res = await getStudents();
+    var persons = getStudents().data;
+    this.setState({ persons });
   }
-
 
   render() {
+    const loading = this.state;
     return (
       <Table
-      //loading={loading}
+      loading={loading}
       dataSource={this.state.persons} 
       columns={columns}
       />

@@ -12,10 +12,6 @@ import * as loginDataStore from '../../store/reducers/loginData';
 import { RouteComponentProps } from 'react-router';
 
 
-/*let loginDataProps = loginDataStore.ILoginState &
-                     typeof loginDataStore.actionCreators &
-                     RouteComponentProps<{}>;*/
-
 export default class Login extends React.Component{
   constructor(){
     super();
@@ -27,16 +23,6 @@ export default class Login extends React.Component{
     };
     this.url = window.location.href.replace(window.location.pathname,"");
     this.authData = null;
-    //this.history = useHistory();
-  }
-
-  sendLogin = () => {
-    sendLogin(this.state);
-    
-    /*if (JSON.parse(localStorage.getItem('login')).login){
-      
-    }*/
-    
   }
 
   render(){
@@ -52,7 +38,7 @@ export default class Login extends React.Component{
         <Input type="password" size="large" placeholder="Password" value={this.state.password} prefix={<KeyOutlined />} 
         onChange={(event)=>{this.setState({password: event.target.value})}} />
         <br/><br/>
-        <Button type="primary" style = {buttonStyle} onClick={()=>{this.sendLogin()}}>
+        <Button type="primary" style = {buttonStyle} onClick={()=>{sendLogin(this.state)}}>
           <strong>LOGIN</strong> 
         </Button>
         <br/><br/>
@@ -62,4 +48,3 @@ export default class Login extends React.Component{
     </div>)
   };
 }
-//export default connect()(login);
