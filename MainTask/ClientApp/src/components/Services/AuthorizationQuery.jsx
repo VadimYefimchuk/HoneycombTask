@@ -35,7 +35,6 @@ export function getUserInfo() {
     { headers: { "Authorization": "Bearer " + authData.token } })
     .then(res => {
       console.log(res.data);
-
       localStorage.setItem('userData', JSON.stringify({
         id: res.data.id,
         email: res.data.email,
@@ -44,7 +43,7 @@ export function getUserInfo() {
         lastName: res.data.lastName,
         age: res.data.age,
         registeredDate: res.data.registeredDate,
-        studyDate: res.data.studyDate
+        studyDate: res.data.studyDate,
       }));
 
       window.location.href = "/select";

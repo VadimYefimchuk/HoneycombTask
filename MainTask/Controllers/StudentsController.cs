@@ -28,7 +28,29 @@ namespace MainTask.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Student>>> GetStudents()
         {
-            return await _context.Students.ToListAsync();
+           var stud = await _context.Students
+                .Include(w => w.Courses)
+                .ToListAsync();
+            return stud;
+        }
+
+        [Authorize(Roles = UserRoles.Admin)]
+        [HttpGet("Search")]
+        public async Task<ActionResult<IEnumerable<Student>>> GetSearchStudents(string query)
+        {
+            var stud = await _context.Students
+                 .Where(x =>
+                 x.Id.ToString().Contains(query) ||
+                 x.Name.Contains(query) ||
+                 x.LastName.Contains(query) ||
+                 x.Email.Contains(query) ||
+                 x.Age.ToString().Contains(query) ||
+                 x.RegisteredDate.ToString().Contains(query) ||
+                 x.StudyDate.ToString().Contains(query)
+                 )
+                 .Include(w => w.Courses)
+                 .ToListAsync();
+            return stud;
         }
 
         // GET: api/Students/5
@@ -74,8 +96,6 @@ namespace MainTask.Controllers
                 return BadRequest();
             }
 
-            student.RegisteredDate = DateTime.UtcNow;
-
             _context.Entry(student).State = EntityState.Modified;
 
             try
@@ -103,6 +123,7 @@ namespace MainTask.Controllers
         [HttpPost]
         public async Task<ActionResult<Student>> PostStudent(Student student)
         {
+            student.RegisteredDate = DateTime.UtcNow;
             _context.Students.Add(student);
             await _context.SaveChangesAsync();
 

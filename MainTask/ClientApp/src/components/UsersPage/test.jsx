@@ -1,16 +1,36 @@
-import * as React from 'react';
+import React, { useState } from 'react';
+import ReactDOM from 'react-dom';
+import 'antd/dist/antd.css';
 
-export default class Test extends React.Component {
-    state = {
-      count: 0,
-    }
-  
+import { Modal, Button } from 'antd';
 
-    render() {
-      return (
-        <div>
-          <button onClick={this.onClick}>Добавить компонент</button>
-        </div>
-      );
-    }
-  }
+const App = () => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  return (
+    <>
+      <Button type="primary" onClick={showModal}>
+        Open Modal
+      </Button>
+      <Modal title="Basic Modal" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+      </Modal>
+    </>
+  );
+};
+
+export default App

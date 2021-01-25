@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import UserList from './UserList'
+import App from './test'
 
 export default class AdminsTable extends React.Component{
 
@@ -16,7 +17,7 @@ export default class AdminsTable extends React.Component{
         <div>
           <h1>Admins table</h1>
           <hr/>
-          <UserList/>
+          <Test/>
         </div>
       )
     }
@@ -49,6 +50,7 @@ export default class AdminsTable extends React.Component{
           ? <div>
               <h1 className="text-white" style ={{"textAlign":"center"}}>Admins table</h1>
               <hr/>
+              <div id="testModal"></div>
               <UserList/>
             </div>
           : <div>

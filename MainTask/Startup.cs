@@ -39,6 +39,9 @@ namespace MainTask
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
+            services.AddControllers().AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
             // Adding Authentication  
             services.AddAuthentication(options =>
             {
@@ -91,5 +94,6 @@ namespace MainTask
                 }
             });
         }
+
     }
 }

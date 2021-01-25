@@ -12,15 +12,13 @@ namespace MainTask.DAL.Entities
         public int Id { get; set; }
         public string Email { get; set; }
         public string UserName { get; set; }
-
-        [MaxLength(20)]
         public string? Name{ get; set; }
-        [MaxLength(20)]
         public string? LastName{ get; set; }
-        [MaxLength(3)]
-        public uint? Age{ get; set; }
+        public int? Age{ get; set; }
         public DateTime? RegisteredDate{ get; set; }
         public DateTime? StudyDate{ get; set; }
+
+        public List<Course> Courses { get; set; }
 
     }
 }
