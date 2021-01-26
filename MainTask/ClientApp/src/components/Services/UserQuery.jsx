@@ -47,10 +47,11 @@ export function changeCurrentUser(currentData) {
         });
 }
 
-export async function getStudents() {
-    return axios.get(url + `/api/students`, { headers: { "Authorization": "Bearer " + authData.token } })
+export async function getStudents(start, length) {
+    return axios.get(url + `/api/students?start=` + start + '&length=' + length, 
+    { headers: { "Authorization": "Bearer " + authData.token } })
         .then(res => {
-            const newRes = res.data.map(data => ({
+            const newRes = res.data.data.map(data => ({
                 key: data.id,
                 id: data.id,
                 name: data.name,
@@ -61,19 +62,23 @@ export async function getStudents() {
                 studyDate: data.studyDate,
                 username: data.userName,
                 description: data.courses.map(course => ([
-                    "Course name = " + course.courseName + ";  ",
-                    "Description = " + course.description + ";  ",
-                    "Start date = " + course.startDate + ";  ",
+                    course.courseName,
+                    course.description,
+                    course.startDate,
                 ])),
             }))
-            return newRes;
+            return {
+                data: newRes, 
+                count: res.data.count
+            };
         })
 }
 
-export async function getSearchStudents(query) {
-    return axios.get(url + `/api/students/search?query=` + query, { headers: { "Authorization": "Bearer " + authData.token } })
+export async function getSearchStudents(query, start, length) {
+    return axios.get(url + `/api/students/search?query=` + query + `&start=` + start + '&length=' + length,
+    { headers: { "Authorization": "Bearer " + authData.token } })
         .then(res => {
-            const newRes = res.data.map(data => ({
+            const newRes = res.data.data.map(data => ({
                 key: data.id,
                 id: data.id,
                 name: data.name,
@@ -84,11 +89,18 @@ export async function getSearchStudents(query) {
                 studyDate: data.studyDate,
                 username: data.userName,
                 description: data.courses.map(course => ([
-                    "Course name = " + course.courseName + ";  ",
-                    "Description = " + course.description + ";  ",
-                    "Start date = " + course.startDate + ";  ",
+                    course.courseName,
+                    course.description,
+                    course.startDate,
                 ])),
             }))
-            return newRes;
+            return {
+                data: newRes, 
+                count: res.data.count
+            };
         })
+        .catch((error) => {
+            console.error(error.message);
+            openNotification('error', 'ERROR!', 'NOT FOUND!');
+        });
 }

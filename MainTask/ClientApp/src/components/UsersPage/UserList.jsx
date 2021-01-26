@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Table } from 'antd';
+import { Table, Row, Col, Pagination } from 'antd';
 import { EditFilled } from '@ant-design/icons'
 import { getStudents, changeCurrentUser, getSearchStudents } from '../Services/UserQuery'
 
@@ -18,37 +18,44 @@ export default class PersonList extends React.Component {
     {
       title: 'Id',
       dataIndex: 'id',
+      sorter: (a, b) => a.id - b.id,
       key: 'id',
     },
     {
       title: 'Name',
       dataIndex: 'name',
+      sorter: (a, b) => a.name.localeCompare(b.name),
       key: 'name',
     },
     {
       title: 'LastName',
       dataIndex: 'lastName',
+      sorter: (a, b) => a.lastName.localeCompare(b.lastName),
       key: 'lastName',
     },
     {
       title: 'Age',
       dataIndex: 'age',
+      sorter: (a, b) => a.age - b.age,
       key: 'age',
     },
     {
       title: 'Email',
       dataIndex: 'email',
+      sorter: (a, b) => a.email.localeCompare(b.email),
       key: 'email',
     },
     {
       title: 'RegisteredDate',
       dataIndex: 'registeredDate',
+      sorter: (a, b) => a.registeredDate.localeCompare(b.registeredDate),
       key: 'registeredDate',
       render: (date) => <a>{new Date(Date.parse(date)).toLocaleString()}</a>,
     },
     {
       title: 'StudyDate',
       dataIndex: 'studyDate',
+      sorter: (a, b) => a.studyDate.localeCompare(b.studyDate),
       key: 'studyDate',
       render: (date) => <a>{new Date(Date.parse(date)).toLocaleString()}</a>,
     },
@@ -70,14 +77,20 @@ export default class PersonList extends React.Component {
     this.state = {
       persons: [],
       isModalVisible: false,
-      currentUser: {}
+      searchData: '',
+      currentUser: {},
+      dataCount: 0,
+      currentPage: 1,
+      pageSize: 5
     };
     this.onSearch = this.onSearch.bind(this);
+    this.onPagination = this.onPagination.bind(this);
   }
 
   async componentDidMount() {
-    const persons = await getStudents();
-    this.setState({ persons });
+    const persons = await getStudents(0, 5);
+    this.setState({ dataCount: persons.count });
+    this.setState({ persons: persons.data });
   }
 
   currentUser = {};
@@ -103,16 +116,67 @@ export default class PersonList extends React.Component {
     this.setState({ isModalVisible: false });
   };
 
-  async onSearch(value) {
-    if (value == '') {
-      const fullPersons = await getStudents();
-      this.setState({ persons: fullPersons });
+  async onSearch(current, pageSize, value = null) {
+    if (value == '' || value == null) {
+      const fullPersons = await getStudents(current, pageSize);
+      this.setState({ persons: fullPersons.data });
+      this.setState({ dataCount: fullPersons.count });
     }
     else {
-      const personIsSearch = await getSearchStudents(value);
-      this.setState({ persons: personIsSearch });
+      const personIsSearch = await getSearchStudents(value, current, pageSize);
+      if (personIsSearch != null) {
+        this.setState({ persons: personIsSearch.data });
+        this.setState({ dataCount: personIsSearch.count });
+      }
     }
 
+  }
+
+  onChangeSearch = (value) => {
+
+    if (value != this.state.searchData) {
+      this.setState({ searchData: value });
+      this.setState({ currentPage: 1 });
+    }
+
+    if (value == '' || value == null) {
+      this.onSearch(0, this.state.pageSize, value);
+    }
+    else {
+      if (value != this.state.searchData) {
+        this.onSearch(0, this.state.pageSize, value);
+      }
+      else {
+        this.onSearch((this.state.currentPage-1)*this.state.pageSize, this.state.pageSize, value);
+      }
+
+    }
+
+  }
+
+  expandableRowContent = (data) => {
+    const courseName = data[0];
+    const description = data[1];
+    const startDateLocale = new Date(Date.parse(data[2])).toLocaleString();
+    return (
+      <Row>
+        <Col span={2}>Course name: </Col>
+        <Col span={4}><strong>{courseName}</strong></Col>
+        <Col span={2}>Description: </Col>
+        <Col span={9}><strong>{description}</strong></Col>
+        <Col span={2}>Start date: </Col>
+        <Col span={5}><strong>{startDateLocale}</strong></Col>
+      </Row>
+    )
+  }
+
+  async onPagination(current, pageSize) {
+    const checkPoint = pageSize * (current - 1);
+    
+    this.setState({ currentPage: current });
+    this.setState({ pageSize: pageSize });
+
+    this.onSearch(checkPoint, pageSize, this.state.searchData);
   }
 
   render() {
@@ -123,14 +187,21 @@ export default class PersonList extends React.Component {
           allowClear
           enterButton="Search"
           size="large"
-          onSearch={this.onSearch}
+          onSearch={this.onChangeSearch}
         />
-        <br/><br/>
+        <br /><br />
         <Table
+          pagination={{
+            position: ["topRight", "bottomRight"],
+            defaultPageSize: this.state.pageSize,
+            defaultCurrent: this.state.currentPage,
+            total: this.state.dataCount,
+            onChange: this.onPagination
+          }}
           columns={this.columns}
           expandable={{
-            expandedRowRender: record => record.description.map(desc => (<p style={{ margin: 0 }}>{desc}</p>)),
-            rowExpandable: record => record.description[0] !== undefined,
+            expandedRowRender: record => record.description.map(desc => (this.expandableRowContent(desc))),
+            rowExpandable: record => record.description.length !== 0,
           }}
           dataSource={this.state.persons}
         />

@@ -26,17 +26,25 @@ namespace MainTask.Controllers
         // GET: api/Students
         [Authorize(Roles = UserRoles.Admin)]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Student>>> GetStudents()
+        public async Task<ActionResult<ResponceDataPage<IEnumerable<Student>>>> GetStudents(int start, int length)
         {
-           var stud = await _context.Students
+            var stud = await _context.Students
+                .Skip(start)
+                .Take(length)
                 .Include(w => w.Courses)
                 .ToListAsync();
-            return stud;
+
+            var count = _context.Students.Count();
+
+            return new ResponceDataPage<IEnumerable<Student>>(){
+                count = count,
+                data = stud
+            };
         }
 
         [Authorize(Roles = UserRoles.Admin)]
         [HttpGet("Search")]
-        public async Task<ActionResult<IEnumerable<Student>>> GetSearchStudents(string query)
+        public async Task<ActionResult<ResponceDataPage<IEnumerable<Student>>>> GetSearchStudents(string query, int start, int length)
         {
             var stud = await _context.Students
                  .Where(x =>
@@ -49,8 +57,32 @@ namespace MainTask.Controllers
                  x.StudyDate.ToString().Contains(query)
                  )
                  .Include(w => w.Courses)
+                 .Skip(start)
+                 .Take(length)
                  .ToListAsync();
-            return stud;
+
+            var count = await _context.Students
+                 .Where(x =>
+                 x.Id.ToString().Contains(query) ||
+                 x.Name.Contains(query) ||
+                 x.LastName.Contains(query) ||
+                 x.Email.Contains(query) ||
+                 x.Age.ToString().Contains(query) ||
+                 x.RegisteredDate.ToString().Contains(query) ||
+                 x.StudyDate.ToString().Contains(query)
+                 )
+                 .Include(w => w.Courses)
+                 .ToListAsync();
+
+            if (count.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return new ResponceDataPage<IEnumerable<Student>>() { 
+                count = count.Count,
+                data = stud
+            };
         }
 
         // GET: api/Students/5
