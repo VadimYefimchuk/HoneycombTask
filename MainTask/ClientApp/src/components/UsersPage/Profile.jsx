@@ -51,21 +51,21 @@ export default class Profile extends React.Component{
 
                         <Row>
                           <Col span={8}><h5 style={{height:"100%"}}>Email:</h5></Col>
-                          <Col span={16}><h6>{userData.email}</h6> </Col>
+                          <Col span={16}><h6 style={{marginTop: "4px"}}>{userData.email}</h6> </Col>
                         </Row>
                         
                         <br/>
 
                         <Row>
                           <Col span={8}><h5 style={{height:"100%"}}>Registered:</h5></Col>
-                          <Col span={16}><h6>{new Date(Date.parse(userData.registeredDate)).toLocaleString()}</h6></Col>
+                          <Col span={16}><h6 style={{marginTop: "4px"}}>{new Date(Date.parse(userData.registeredDate)).toLocaleString()}</h6></Col>
                         </Row>
                         
                         <br/>
 
                         <Row>
                           <Col span={8}><h5 style={{height:"100%"}}>Study Date:</h5></Col>
-                          <Col span={16}><h6>{new Date(Date.parse(userData.studyDate)).toLocaleString()}</h6></Col>
+                          <Col span={16}><h6 style={{marginTop: "4px"}}>{new Date(Date.parse(userData.studyDate)).toLocaleString()}</h6></Col>
                         </Row>
                         
                         <br/>

@@ -9,6 +9,7 @@ using MainTask.DAL;
 using MainTask.DAL.Entities;
 using Microsoft.AspNetCore.Authorization;
 using MainTask.Models.Auth;
+using PagedList;
 
 namespace MainTask.Controllers
 {
@@ -43,45 +44,31 @@ namespace MainTask.Controllers
         }
 
         [Authorize(Roles = UserRoles.Admin)]
-        [HttpGet("Search")]
-        public async Task<ActionResult<ResponceDataPage<IEnumerable<Student>>>> GetSearchStudents(string query, int start, int length)
+        [HttpPost("Search")]
+        public async Task<ActionResult<ResponceDataPage<IEnumerable<Student>>>> GetSearchStudents(SearchSettings searchSettings)
         {
-            var stud = await _context.Students
-                 .Where(x =>
-                 x.Id.ToString().Contains(query) ||
-                 x.Name.Contains(query) ||
-                 x.LastName.Contains(query) ||
-                 x.Email.Contains(query) ||
-                 x.Age.ToString().Contains(query) ||
-                 x.RegisteredDate.ToString().Contains(query) ||
-                 x.StudyDate.ToString().Contains(query)
-                 )
-                 .Include(w => w.Courses)
-                 .Skip(start)
-                 .Take(length)
-                 .ToListAsync();
 
-            var count = await _context.Students
-                 .Where(x =>
-                 x.Id.ToString().Contains(query) ||
-                 x.Name.Contains(query) ||
-                 x.LastName.Contains(query) ||
-                 x.Email.Contains(query) ||
-                 x.Age.ToString().Contains(query) ||
-                 x.RegisteredDate.ToString().Contains(query) ||
-                 x.StudyDate.ToString().Contains(query)
-                 )
-                 .Include(w => w.Courses)
-                 .ToListAsync();
+            var students = _context.Students.Include(w => w.Courses).AsQueryable();
 
-            if (count.Count == 0)
+            if (!String.IsNullOrEmpty(searchSettings.SearchString))
             {
-                return NotFound();
+                searchSettings.SearchString = searchSettings.SearchString.ToLower();
+                students = students.Where(x =>
+                                        x.Id.ToString().ToLower().Contains(searchSettings.SearchString) ||
+                                        x.Name.ToLower().Contains(searchSettings.SearchString) ||
+                                        x.LastName.ToLower().Contains(searchSettings.SearchString) ||
+                                        x.Email.ToLower().Contains(searchSettings.SearchString) ||
+                                        x.Age.ToString().ToLower().Contains(searchSettings.SearchString) ||
+                                        x.RegisteredDate.ToString().ToLower().Contains(searchSettings.SearchString) ||
+                                        x.StudyDate.ToString().ToLower().Contains(searchSettings.SearchString)
+                                        );
             }
+            //Paste here
+            students = await ApplySorting(students, searchSettings.SortOrder, searchSettings.SortField);
 
             return new ResponceDataPage<IEnumerable<Student>>() { 
-                count = count.Count,
-                data = stud
+                count = students.Count(),
+                data = students.ToPagedList(searchSettings.CurrentPage, searchSettings.PageSize)
             };
         }
 
@@ -182,6 +169,56 @@ namespace MainTask.Controllers
         private bool StudentExists(int id)
         {
             return _context.Students.Any(e => e.Id == id);
+        }
+
+        async private Task<IQueryable<Student>> ApplySorting(IQueryable<Student> data, string sortOrder, string sortField)
+        {
+            if (sortOrder == "ascend")
+            {
+                switch (sortField)
+                {
+                    case "id":
+                        return data = data.OrderBy(s => s.Id);
+                    case "name":
+                        return data = data.OrderBy(s => s.Name);
+                    case "lastName":
+                        return data = data.OrderBy(s => s.LastName);
+                    case "age":
+                        return data = data.OrderBy(s => s.Age);
+                    case "email":
+                        return data = data.OrderBy(s => s.Email);
+                    case "registeredDate":
+                        return data = data.OrderBy(s => s.RegisteredDate);
+                    case "studyDate":
+                        return data = data.OrderBy(s => s.StudyDate);
+                    default:
+                        return data;
+                }
+            }
+            else if (sortOrder == "descend")
+            {
+                switch (sortField)
+                {
+                    case "id":
+                        return data = data.OrderByDescending(s => s.Id);
+                    case "name":
+                        return data = data.OrderByDescending(s => s.Name);
+                    case "lastName":
+                        return data = data.OrderByDescending(s => s.LastName);
+                    case "age":
+                        return data = data.OrderByDescending(s => s.Age);
+                    case "email":
+                        return data = data.OrderByDescending(s => s.Email);
+                    case "registeredDate":
+                        return data = data.OrderByDescending(s => s.RegisteredDate);
+                    case "studyDate":
+                        return data = data.OrderByDescending(s => s.StudyDate);
+                    default:
+                        return data;
+                }
+            }
+            return data;
+
         }
     }
 }

@@ -74,8 +74,15 @@ export async function getStudents(start, length) {
         })
 }
 
-export async function getSearchStudents(query, start, length) {
-    return axios.get(url + `/api/students/search?query=` + query + `&start=` + start + '&length=' + length,
+export async function getSearchStudents( currentPage, pageSize, searchString = null, sortOrder = null, sortField = null) {
+    return axios.post(url + `/api/students/search`,
+    {
+        pageSize: pageSize,
+        currentPage: currentPage,
+        sortOrder: sortOrder,
+        sortField: sortField,
+        searchString: searchString
+    },
     { headers: { "Authorization": "Bearer " + authData.token } })
         .then(res => {
             const newRes = res.data.data.map(data => ({

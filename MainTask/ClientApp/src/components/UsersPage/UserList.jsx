@@ -18,44 +18,44 @@ export default class PersonList extends React.Component {
     {
       title: 'Id',
       dataIndex: 'id',
-      sorter: (a, b) => a.id - b.id,
+      sorter: true,
       key: 'id',
     },
     {
       title: 'Name',
       dataIndex: 'name',
-      sorter: (a, b) => a.name.localeCompare(b.name),
+      sorter: true,
       key: 'name',
     },
     {
       title: 'LastName',
       dataIndex: 'lastName',
-      sorter: (a, b) => a.lastName.localeCompare(b.lastName),
+      sorter: true,
       key: 'lastName',
     },
     {
       title: 'Age',
       dataIndex: 'age',
-      sorter: (a, b) => a.age - b.age,
+      sorter: true,
       key: 'age',
     },
     {
       title: 'Email',
       dataIndex: 'email',
-      sorter: (a, b) => a.email.localeCompare(b.email),
+      sorter: true,
       key: 'email',
     },
     {
       title: 'RegisteredDate',
       dataIndex: 'registeredDate',
-      sorter: (a, b) => a.registeredDate.localeCompare(b.registeredDate),
+      sorter: true,
       key: 'registeredDate',
       render: (date) => <a>{new Date(Date.parse(date)).toLocaleString()}</a>,
     },
     {
       title: 'StudyDate',
       dataIndex: 'studyDate',
-      sorter: (a, b) => a.studyDate.localeCompare(b.studyDate),
+      sorter: true,
       key: 'studyDate',
       render: (date) => <a>{new Date(Date.parse(date)).toLocaleString()}</a>,
     },
@@ -81,14 +81,16 @@ export default class PersonList extends React.Component {
       currentUser: {},
       dataCount: 0,
       currentPage: 1,
-      pageSize: 5
+      pageSize: 5,
+      sortOrder: '',
+      sortField: ''
     };
     this.onSearch = this.onSearch.bind(this);
-    this.onPagination = this.onPagination.bind(this);
+    this.onChangeTable = this.onChangeTable.bind(this);
   }
 
   async componentDidMount() {
-    const persons = await getStudents(0, 5);
+    const persons = await getSearchStudents(this.state.currentPage, this.state.pageSize);
     this.setState({ dataCount: persons.count });
     this.setState({ persons: persons.data });
   }
@@ -116,42 +118,19 @@ export default class PersonList extends React.Component {
     this.setState({ isModalVisible: false });
   };
 
-  async onSearch(current, pageSize, value = null) {
-    if (value == '' || value == null) {
-      const fullPersons = await getStudents(current, pageSize);
-      this.setState({ persons: fullPersons.data });
-      this.setState({ dataCount: fullPersons.count });
-    }
-    else {
-      const personIsSearch = await getSearchStudents(value, current, pageSize);
-      if (personIsSearch != null) {
-        this.setState({ persons: personIsSearch.data });
-        this.setState({ dataCount: personIsSearch.count });
-      }
-    }
-
+  async onSearch(current, pageSize, sortOrder = null, sortField = null, value = null) {
+    const fullPersons = await getSearchStudents(current, pageSize, value, sortOrder, sortField);
+    this.setState({ persons: fullPersons.data });
+    this.setState({ dataCount: fullPersons.count });
   }
 
   onChangeSearch = (value) => {
-
     if (value != this.state.searchData) {
       this.setState({ searchData: value });
       this.setState({ currentPage: 1 });
     }
 
-    if (value == '' || value == null) {
-      this.onSearch(0, this.state.pageSize, value);
-    }
-    else {
-      if (value != this.state.searchData) {
-        this.onSearch(0, this.state.pageSize, value);
-      }
-      else {
-        this.onSearch((this.state.currentPage-1)*this.state.pageSize, this.state.pageSize, value);
-      }
-
-    }
-
+    this.onSearch(this.state.currentPage, this.state.pageSize, this.state.sortOrder, this.state.sortField, value);
   }
 
   expandableRowContent = (data) => {
@@ -170,13 +149,13 @@ export default class PersonList extends React.Component {
     )
   }
 
-  async onPagination(current, pageSize) {
-    const checkPoint = pageSize * (current - 1);
-    
-    this.setState({ currentPage: current });
-    this.setState({ pageSize: pageSize });
-
-    this.onSearch(checkPoint, pageSize, this.state.searchData);
+  onChangeTable = (pagination, filters, sorter, extra) => {
+    this.setState({ currentPage: pagination.current });
+    this.setState({ pageSize: pagination.pageSize });
+    //const sortOrder = sorter.field + '_' + sorter.order;
+    this.setState({ sortOrder:  sorter.order});
+    this.setState({ sortField:  sorter.field});
+    this.onSearch(pagination.current, pagination.pageSize, sorter.order, sorter.field, this.state.searchData );
   }
 
   render() {
@@ -191,12 +170,12 @@ export default class PersonList extends React.Component {
         />
         <br /><br />
         <Table
+          onChange={this.onChangeTable}
           pagination={{
             position: ["topRight", "bottomRight"],
-            defaultPageSize: this.state.pageSize,
-            defaultCurrent: this.state.currentPage,
+            pageSize: this.state.pageSize,
+            current: this.state.currentPage,
             total: this.state.dataCount,
-            onChange: this.onPagination
           }}
           columns={this.columns}
           expandable={{
