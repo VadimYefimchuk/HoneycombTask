@@ -65,6 +65,7 @@ export async function getStudents(start, length) {
                     course.courseName,
                     course.description,
                     course.startDate,
+                    course.id
                 ])),
             }))
             return {
@@ -99,6 +100,7 @@ export async function getSearchStudents( currentPage, pageSize, searchString = n
                     course.courseName,
                     course.description,
                     course.startDate,
+                    course.id
                 ])),
             }))
             return {

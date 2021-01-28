@@ -1,7 +1,7 @@
 import { notification } from 'antd';
 
 
-export const openNotification = (type, title, text) => {
+export const openNotification = (type, title, text, time = 4) => {
     let backgroundColorStyle;
     switch(type){
         case 'success':
@@ -25,5 +25,6 @@ export const openNotification = (type, title, text) => {
       message: title,
       description: text,
       style: backgroundColorStyle, 
+      duration: time,
     });
   };

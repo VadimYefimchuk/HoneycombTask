@@ -2,7 +2,8 @@ import React from 'react';
 import axios from 'axios';
 import { Table, Row, Col, Pagination } from 'antd';
 import { EditFilled } from '@ant-design/icons'
-import { getStudents, changeCurrentUser, getSearchStudents } from '../Services/UserQuery'
+import { changeCurrentUser, getSearchStudents } from '../Services/UserQuery'
+import { openNotification } from '../Services/Notifications'
 
 import { useState } from 'react';
 import 'antd/dist/antd.css';
@@ -130,26 +131,46 @@ export default class PersonList extends React.Component {
       this.setState({ currentPage: 1 });
     }
 
+    openNotification('info', 'SEARCH!', 'Searching!', 1.5);
     this.onSearch(this.state.currentPage, this.state.pageSize, this.state.sortOrder, this.state.sortField, value);
   }
 
   expandableRowContent = (data) => {
-    const courseName = data[0];
-    const description = data[1];
-    const startDateLocale = new Date(Date.parse(data[2])).toLocaleString();
+    const rowColumn = [
+      {
+        title: <strong>Course name</strong>,
+        dataIndex: 0,
+        sorter: (a, b) => a[0].localeCompare(b[0]),
+        key: 0,
+      },
+      {
+        title: <strong>Description</strong>,
+        dataIndex: 1,
+        sorter: (a, b) => a[1].localeCompare(b[1]),
+        key: 1,
+      },
+      {
+        title: <strong>Start date</strong>,
+        dataIndex: 2,
+        sorter: (a, b) => a[2].localeCompare(b[2]),
+        key: 2,
+        render: (date) => <a>{new Date(Date.parse(date)).toLocaleString()}</a>,
+      },
+    ]
+    //const courseName = data[0];
+    //const description = data[1];
+    //const startDateLocale = new Date(Date.parse(data[2])).toLocaleString();
     return (
-      <Row>
-        <Col span={2}>Course name: </Col>
-        <Col span={4}><strong>{courseName}</strong></Col>
-        <Col span={2}>Description: </Col>
-        <Col span={9}><strong>{description}</strong></Col>
-        <Col span={2}>Start date: </Col>
-        <Col span={5}><strong>{startDateLocale}</strong></Col>
-      </Row>
+      <Table
+      columns={rowColumn}
+      dataSource={data}
+      pagination={false}
+      />
     )
   }
 
   onChangeTable = (pagination, filters, sorter, extra) => {
+    openNotification('info', 'WAITING!', 'Please waiting!', 1.5);
     this.setState({ currentPage: pagination.current });
     this.setState({ pageSize: pagination.pageSize });
     //const sortOrder = sorter.field + '_' + sorter.order;
@@ -179,7 +200,7 @@ export default class PersonList extends React.Component {
           }}
           columns={this.columns}
           expandable={{
-            expandedRowRender: record => record.description.map(desc => (this.expandableRowContent(desc))),
+            expandedRowRender: record => this.expandableRowContent(record.description),
             rowExpandable: record => record.description.length !== 0,
           }}
           dataSource={this.state.persons}
