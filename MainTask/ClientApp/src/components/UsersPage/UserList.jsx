@@ -171,12 +171,23 @@ export default class PersonList extends React.Component {
 
   onChangeTable = (pagination, filters, sorter, extra) => {
     openNotification('info', 'WAITING!', 'Please waiting!', 1.5);
+    var sorterBy = null;
+    if (sorter.order == 'ascend'){
+      sorterBy = 'asc';
+    }
+    else if (sorter.order == 'descend'){
+      sorterBy = 'desc';
+    }
+
+    var sorterByField = sorter.field != undefined ? sorter.field.charAt(0).toUpperCase() + sorter.field.slice(1) : undefined
+
     this.setState({ currentPage: pagination.current });
     this.setState({ pageSize: pagination.pageSize });
-    //const sortOrder = sorter.field + '_' + sorter.order;
-    this.setState({ sortOrder:  sorter.order});
-    this.setState({ sortField:  sorter.field});
-    this.onSearch(pagination.current, pagination.pageSize, sorter.order, sorter.field, this.state.searchData );
+
+    this.setState({ sortOrder:  sorterBy});
+    this.setState({ sortField:  sorterByField});
+
+    this.onSearch(pagination.current, pagination.pageSize, sorterBy, sorterByField, this.state.searchData );
   }
 
   render() {

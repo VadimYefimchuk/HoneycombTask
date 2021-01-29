@@ -10,6 +10,7 @@ using MainTask.DAL.Entities;
 using Microsoft.AspNetCore.Authorization;
 using MainTask.Models.Auth;
 using PagedList;
+using MainTask.DAL.Extensions;
 
 namespace MainTask.Controllers
 {
@@ -173,52 +174,18 @@ namespace MainTask.Controllers
 
         async private Task<IQueryable<Student>> ApplySorting(IQueryable<Student> data, string sortOrder, string sortField)
         {
-            if (sortOrder == "ascend")
+            if (sortOrder == "asc")
             {
-                switch (sortField)
-                {
-                    case "id":
-                        return data = data.OrderBy(s => s.Id);
-                    case "name":
-                        return data = data.OrderBy(s => s.Name);
-                    case "lastName":
-                        return data = data.OrderBy(s => s.LastName);
-                    case "age":
-                        return data = data.OrderBy(s => s.Age);
-                    case "email":
-                        return data = data.OrderBy(s => s.Email);
-                    case "registeredDate":
-                        return data = data.OrderBy(s => s.RegisteredDate);
-                    case "studyDate":
-                        return data = data.OrderBy(s => s.StudyDate);
-                    default:
-                        return data;
-                }
+                return data.SortBy( sortOrder, sortField);
             }
-            else if (sortOrder == "descend")
+            else if (sortOrder == "desc")
             {
-                switch (sortField)
-                {
-                    case "id":
-                        return data = data.OrderByDescending(s => s.Id);
-                    case "name":
-                        return data = data.OrderByDescending(s => s.Name);
-                    case "lastName":
-                        return data = data.OrderByDescending(s => s.LastName);
-                    case "age":
-                        return data = data.OrderByDescending(s => s.Age);
-                    case "email":
-                        return data = data.OrderByDescending(s => s.Email);
-                    case "registeredDate":
-                        return data = data.OrderByDescending(s => s.RegisteredDate);
-                    case "studyDate":
-                        return data = data.OrderByDescending(s => s.StudyDate);
-                    default:
-                        return data;
-                }
+                return data.SortByDescending(sortOrder, sortField);
             }
             return data;
 
         }
+
+        
     }
 }
