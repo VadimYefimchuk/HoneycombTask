@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { sendLogin } from './AuthorizationQuery';
+import { sendLogin, getUserInfo } from './AuthorizationQuery';
 import { openNotification } from './Notifications';
 
 

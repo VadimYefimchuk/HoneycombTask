@@ -1,10 +1,10 @@
 import * as React from 'react';
 import axios from 'axios';
-import { Input, Button } from 'antd';
-import { UserOutlined, KeyOutlined, IeOutlined } from '@ant-design/icons';
+import { Form, Input, Button, Checkbox } from 'antd';
+import { UserOutlined, LockOutlined, IeOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { areaStyle, buttonStyle, inputStyle } from '../Styles/MainFieldStyle'
-import {sendRegister} from '../Services/AuthorizationQuery'
+import { sendRegister } from '../Services/AuthorizationQuery'
 
 
 
@@ -26,24 +26,66 @@ export default class Registration extends React.Component {
       <div style={areaStyle}>
         <h2>Registration</h2>
         <br />
+
         <div style={inputStyle}>
-          <Input type="text" size="large" placeholder="Nickname" value={this.state.username} prefix={<UserOutlined />}
-            onChange={(event) => { this.setState({ username: event.target.value }) }} />
-          <br /><br />
-          <Input type="email" size="large" placeholder="Email" value={this.state.email} prefix={<IeOutlined />}
-            onChange={(event) => { this.setState({ email: event.target.value }) }} />
-          <br /><br />
-          <Input type="password" size="large" placeholder="Password" value={this.state.password} prefix={<KeyOutlined />}
-            onChange={(event) => { this.setState({ password: event.target.value }) }} />
-          <br /><br />
-          <Button type="primary" style={buttonStyle} onClick={() => {sendRegister(this.state)}}>
-            <strong>REGISTRATION</strong>
-          </Button>
-          <br /><br />
-          <Link to="/login">Login</Link>
-          <br /><br />
+          <Form
+            name="normal_login"
+            onFinish={() => {sendRegister(this.state)}}
+          >
+            <Form.Item
+              name="username"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please input your Username!',
+                },
+              ]}
+            >
+              <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Username"
+                onChange={(event) => { this.setState({ username: event.target.value }) }}
+              />
+            </Form.Item>
+            <Form.Item
+              name="email"
+              rules={[
+                {
+                  type: 'email',
+                  required: true,
+                  message: 'Email is not a valid email!',
+                },
+              ]}
+            >
+              <Input prefix={<IeOutlined className="site-form-item-icon" />} placeholder="Email"
+                onChange={(event) => { this.setState({ email: event.target.value }) }}
+              />
+            </Form.Item>
+            <Form.Item
+              name="password"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please input your Password!',
+                },
+              ]}
+            >
+              <Input.Password
+                prefix={<LockOutlined className="site-form-item-icon" />}
+                type="password"
+                placeholder="Password"
+                onChange={(event) => { this.setState({ password: event.target.value }) }}
+              />
+            </Form.Item>
+
+            <Form.Item>
+              <Button style={buttonStyle} htmlType="submit">
+                <strong>REGISTRATION</strong>
+              </Button >
+              <br /><br />
+              Or <Link to="/login">Log in!</Link>
+              <br /><br />
+            </Form.Item>
+          </Form>
         </div>
-      </div>
-    )
+      </div>)
   };
 }

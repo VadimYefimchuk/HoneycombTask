@@ -10,7 +10,8 @@ export const areaStyle = {
 export const buttonStyle = {
     backgroundColor: "#241829", 
     borderRadius: "10px", 
-    width:"50%"
+    width:"50%",
+    color: "white"
 };
 
 export const inputStyle = {

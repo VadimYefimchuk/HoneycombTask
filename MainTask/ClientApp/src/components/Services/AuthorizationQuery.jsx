@@ -34,7 +34,6 @@ export function getUserInfo() {
     url + `/api/students/SearchEmail?username=` + authData.uName,
     { headers: { "Authorization": "Bearer " + authData.token } })
     .then(res => {
-      console.log(res.data);
       localStorage.setItem('userData', JSON.stringify({
         id: res.data.id,
         email: res.data.email,
@@ -47,6 +46,30 @@ export function getUserInfo() {
       }));
 
       window.location.href = "/select";
+    })
+    .catch((error) => {
+      console.error(error);
+      openNotification('error', 'ERROR!', 'No user information received');
+    });
+}
+
+export async function updateUserInfo(data = authData) {
+  axios.get(
+    url + `/api/students/SearchEmail?username=` + data.uName,
+    { headers: { "Authorization": "Bearer " + data.token } })
+    .then(res => {
+      localStorage.setItem('userData', JSON.stringify({
+        id: res.data.id,
+        email: res.data.email,
+        userName: res.data.userName,
+        name: res.data.name,
+        lastName: res.data.lastName,
+        age: res.data.age,
+        registeredDate: res.data.registeredDate,
+        studyDate: res.data.studyDate,
+      }));
+      var uData = localStorage.getItem('userData');
+      return uData;
     })
     .catch((error) => {
       console.error(error);

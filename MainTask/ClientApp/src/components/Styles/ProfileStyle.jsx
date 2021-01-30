@@ -12,6 +12,7 @@ export const buttonStyle = {
     borderRadius: "10px", 
     width:"50%",
     textAlign:"center",
+    color:"white"
 };
 
 export const inputStyle = {

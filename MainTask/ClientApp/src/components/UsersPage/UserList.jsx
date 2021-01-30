@@ -7,8 +7,11 @@ import { openNotification } from '../Services/Notifications'
 
 import { useState } from 'react';
 import 'antd/dist/antd.css';
-import { Input, InputNumber, Popconfirm, Form, Typography, Modal, Button } from 'antd';
+import { Input, InputNumber, Popconfirm, Form, Typography, Modal, Button, DatePicker } from 'antd';
 import { UserOutlined, KeyOutlined } from '@ant-design/icons';
+import { areaStyle, buttonStyle, inputStyle, verticalTextAlign } from '../Styles/ProfileStyle';
+import moment from 'moment';
+
 
 
 const { Search } = Input;
@@ -105,7 +108,9 @@ export default class PersonList extends React.Component {
         this.currentUser = user;
       }
     })
+
     this.setState({ isModalVisible: true });
+    this.onFill();
   };
 
   handleOk = () => {
@@ -157,14 +162,12 @@ export default class PersonList extends React.Component {
         render: (date) => <a>{new Date(Date.parse(date)).toLocaleString()}</a>,
       },
     ]
-    //const courseName = data[0];
-    //const description = data[1];
-    //const startDateLocale = new Date(Date.parse(data[2])).toLocaleString();
+
     return (
       <Table
-      columns={rowColumn}
-      dataSource={data}
-      pagination={false}
+        columns={rowColumn}
+        dataSource={data}
+        pagination={false}
       />
     )
   }
@@ -172,10 +175,10 @@ export default class PersonList extends React.Component {
   onChangeTable = (pagination, filters, sorter, extra) => {
     openNotification('info', 'WAITING!', 'Please waiting!', 1.5);
     var sorterBy = null;
-    if (sorter.order == 'ascend'){
+    if (sorter.order == 'ascend') {
       sorterBy = 'asc';
     }
-    else if (sorter.order == 'descend'){
+    else if (sorter.order == 'descend') {
       sorterBy = 'desc';
     }
 
@@ -184,11 +187,43 @@ export default class PersonList extends React.Component {
     this.setState({ currentPage: pagination.current });
     this.setState({ pageSize: pagination.pageSize });
 
-    this.setState({ sortOrder:  sorterBy});
-    this.setState({ sortField:  sorterByField});
+    this.setState({ sortOrder: sorterBy });
+    this.setState({ sortField: sorterByField });
 
-    this.onSearch(pagination.current, pagination.pageSize, sorterBy, sorterByField, this.state.searchData );
+    this.onSearch(pagination.current, pagination.pageSize, sorterBy, sorterByField, this.state.searchData);
   }
+
+  formRef = React.createRef();
+  onReset = () => {
+    console.log("hi");
+    this.formRef.current.resetFields();
+  };
+
+  onFill = () => {
+    this.formRef.current.setFieldsValue({
+      name: this.state.currentUser.name,
+      lastName: this.state.currentUser.lastName,
+      age: this.state.currentUser.age,
+      registeredDate: moment(this.state.currentUser.registeredDate, 'YYYY-MM-DD HH:mm:ss'),
+      studyDate: moment(this.state.currentUser.studyDate, 'YYYY-MM-DD HH:mm:ss'),
+    });
+  };
+
+  onSubmit = (value) => {
+
+    this.currentUser.name = value.name;
+    this.currentUser.lastName = value.lastName;
+    this.currentUser.age = value.age;
+    this.currentUser.registeredDate = value.registeredDate._d.toISOString();
+    this.currentUser.studyDate = value.studyDate._d.toISOString();
+    
+    this.setState({ currentUser: this.currentUser });
+
+    changeCurrentUser(this.state.currentUser);
+    this.currentUser = {};
+    this.setState({ isModalVisible: false });
+
+  };
 
   render() {
     return (
@@ -216,39 +251,94 @@ export default class PersonList extends React.Component {
           }}
           dataSource={this.state.persons}
         />
-        <Modal title="Change current user" visible={this.state.isModalVisible}
-          width="30%" onOk={this.handleOk} onCancel={this.handleCancel}>
+        <Modal
+          footer={false}
+          forceRender={true}
+          title="Change current user"
+          visible={this.state.isModalVisible}
+          width="30%"
+          onOk={this.handleOk}
+          onCancel={this.handleCancel}>
 
-          <Input type="text" value={this.state.currentUser.name} size="large" placeholder="Name" prefix={<UserOutlined />}
-            onChange={(event) => {
-              this.currentUser.name = event.target.value;
-              this.setState({ currentUser: this.currentUser });
-            }} />
-          <br /><br />
-          <Input type="text" value={this.state.currentUser.lastName} size="large" placeholder="LastName" prefix={<UserOutlined />}
-            onChange={(event) => {
-              this.currentUser.lastName = event.target.value;
-              this.setState({ currentUser: this.currentUser })
-            }} />
-          <br /><br />
-          <Input type="number" value={this.state.currentUser.age} size="large" placeholder="Age" prefix={<UserOutlined />}
-            onChange={(event) => {
-              this.currentUser.age = parseInt(event.target.value);
-              this.setState({ currentUser: this.currentUser })
-            }} />
-          <br /><br />
-          <Input type="datetime-local" value={this.state.currentUser.registeredDate} size="large" placeholder="RegisteredDate" prefix={<UserOutlined />}
-            onChange={(event) => {
-              this.currentUser.registeredDate = event.target.value;
-              this.setState({ currentUser: this.currentUser })
-            }} />
-          <br /><br />
-          <Input type="datetime-local" value={this.state.currentUser.studyDate} size="large" placeholder="StudyDate" prefix={<UserOutlined />}
-            onChange={(event) => {
-              this.currentUser.studyDate = event.target.value;
-              this.setState({ currentUser: this.currentUser })
-            }} />
-          <br /><br />
+          <Form
+
+            ref={this.formRef}
+            name="normal_login"
+            initialValues={this.onFill}
+            onFinish={this.onSubmit}
+
+          >
+            <Form.Item
+              name="name"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please input your Name!',
+                },
+              ]}
+            >
+              <Input placeholder="Name" />
+            </Form.Item>
+
+            <Form.Item
+              name="lastName"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please input your LastName!',
+                },
+              ]}
+            >
+              <Input placeholder="LastName" />
+            </Form.Item>
+
+            <Form.Item
+              name="age"
+              rules={[
+                {
+                  type: 'number', min: 0, max: 99,
+                  required: true,
+                  message: 'Please input your Age!',
+                },
+              ]}
+            >
+              <InputNumber style={{ width: "100%" }} placeholder="Age" />
+            </Form.Item>
+
+            <Form.Item
+              name="registeredDate"
+              rules={[
+                {
+                  type: 'object',
+                  required: true,
+                  message: 'Please select registeredDate time!',
+                },
+              ]}
+            >
+              <DatePicker style={{ width: "100%" }} showTime />
+            </Form.Item>
+
+            <Form.Item
+              name="studyDate"
+              rules={[
+                {
+                  type: 'object',
+                  required: true,
+                  message: 'Please select studyDate time!',
+                },
+              ]}
+            >
+              <DatePicker style={{ width: "100%" }} showTime />
+            </Form.Item>
+
+            <Form.Item>
+              <div style={{ textAlign: "center" }}>
+                <Button style={buttonStyle} htmlType="submit">
+                  <strong>SAVE CHANGES</strong>
+                </Button >
+              </div>
+            </Form.Item>
+          </Form>
 
         </Modal>
       </div>

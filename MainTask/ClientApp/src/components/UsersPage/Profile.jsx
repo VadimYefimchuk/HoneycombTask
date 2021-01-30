@@ -1,100 +1,140 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { DatePicker, Space, Row, Col, Button, Input } from 'antd';
+import { Form, Input, Button, InputNumber } from 'antd';
 import { areaStyle, buttonStyle, inputStyle, verticalTextAlign } from '../Styles/ProfileStyle';
 import { submitUserData, userData } from '../Services/UserQuery';
-import {openNotification} from '../Services/Notifications';
-import {UserOutlined, KeyOutlined} from '@ant-design/icons';
+import { openNotification } from '../Services/Notifications';
+import { UserOutlined, KeyOutlined } from '@ant-design/icons';
+import { updateUserInfo } from '../Services/AuthorizationQuery';
 
 
-export default class Profile extends React.Component{
 
-  constructor(){
+export default class Profile extends React.Component {
+
+  constructor() {
     super();
     this.authData = JSON.parse(localStorage.getItem('login'));
   }
 
-  profileField = <div style = {areaStyle}>
-                    <h2>Your Profile</h2>
-                    <br/>
-                    <div style = {inputStyle}>
-                      <div style={{textAlign: "left"}}>
-                        <Row>
-                          <Col span={8}> <h5 style={{height:"100%"}}>Name:</h5> </Col>
-                          <Col span={16}>
-                            <Input style={{textAlign:"right"}} type="text" defaultValue={userData.name} placeholder="Name" prefix={<UserOutlined/>}
-                            onChange={(event)=>{userData.name = event.target.value}} />
-                          </Col>
-                        </Row>
+  profileField = <div style={areaStyle}>
+                  <h2>Your Profile</h2>
+                  <br/>
 
-                        <br/>
+                  <div style={inputStyle}>
+                    <Form
+                      labelCol={{ span: 8 }}
+                      wrapperCol={{ span: 16 }}
+                      layout="horizontal"
+                      name="normal_login"
+                      initialValues={{
+                        name: userData.name,
+                        lastName: userData.lastName,
+                        age: parseInt(userData.age),
+                        email: userData.email,
+                        registeredDate: userData.registeredDate,
+                        studyDate: userData.studyDate,
+                      }}
+                      onFinish={() => {submitUserData()}}
+                    >
+                      <Form.Item
+                        name="name"
+                        label="Name"
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Please input your Name!',
+                          },
+                        ]}
+                      >
+                        <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Name"
+                          onChange={(event)=>{userData.name = event.target.value}}
+                        />
+                      </Form.Item>
 
-                        <Row>
-                          <Col span={8}><h5 style={{height:"100%"}}>Last name:</h5></Col>
-                          <Col span={16}>
-                            <Input type="text" defaultValue={userData.lastName} placeholder="LastName" prefix={<UserOutlined/>}
-                            onChange={(event)=>{userData.lastName = event.target.value}} />
-                          </Col>
-                        </Row>
+                      <Form.Item
+                        name="lastName"
+                        label="LastName"
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Please input your LastName!',
+                          },
+                        ]}
+                      >
+                        <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="LastName"
+                          onChange={(event)=>{userData.lastName = event.target.value}}
+                        />
+                      </Form.Item>
 
-                        <br/>
-
-                        <Row>
-                          <Col span={8}><h5 style={{height:"100%"}}>Age:</h5></Col>
-                          <Col span={16}>
-                            <Input type="number" defaultValue={userData.age} placeholder="Age" prefix={<UserOutlined/>}
-                            onChange={(event)=>{userData.age = Number(event.target.value)}} />
-                          </Col>
-                        </Row>
+                      <Form.Item
+                        name="age"
+                        label="Age"
+                        rules={[
+                          {
+                            type: 'number', min: 0, max: 99,
+                            required: true,
+                            message: 'Please input your Age!',
+                          },
+                        ]}
+                      >
+                        <InputNumber style={{width:"100%"}} prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Age"
+                          onChange={(event)=>{userData.age = event}}
+                        />
+                      </Form.Item>
+                      
+                      <Form.Item
+                        name="email"
+                        label="Email"
+                      >
+                        <div style={{textAlign: "left"}}>
+                          <label style={{marginBottom: "1px"}}  htmlFor="">{userData.email}</label>
+                        </div>
                         
-                        <br/>
+                      </Form.Item>
 
-                        <Row>
-                          <Col span={8}><h5 style={{height:"100%"}}>Email:</h5></Col>
-                          <Col span={16}><h6 style={{marginTop: "4px"}}>{userData.email}</h6> </Col>
-                        </Row>
-                        
-                        <br/>
+                      <Form.Item
+                        name="registeredDate"
+                        label="RegisteredDate"
+                      >
+                        <div style={{textAlign: "left"}}>
+                        <label style={{marginBottom: "1px"}} htmlFor="">{new Date(Date.parse(userData.registeredDate)).toLocaleString()}</label>
+                        </div>
+                      </Form.Item>
 
-                        <Row>
-                          <Col span={8}><h5 style={{height:"100%"}}>Registered:</h5></Col>
-                          <Col span={16}><h6 style={{marginTop: "4px"}}>{new Date(Date.parse(userData.registeredDate)).toLocaleString()}</h6></Col>
-                        </Row>
-                        
-                        <br/>
+                      <Form.Item
+                        name="studyDate"
+                        label="StudyDate"
+                      >
+                        <div style={{textAlign: "left"}}>
+                        <label style={{marginBottom: "1px"}} htmlFor="">{new Date(Date.parse(userData.studyDate)).toLocaleString()}</label>
+                        </div>
+                      </Form.Item>
 
-                        <Row>
-                          <Col span={8}><h5 style={{height:"100%"}}>Study Date:</h5></Col>
-                          <Col span={16}><h6 style={{marginTop: "4px"}}>{new Date(Date.parse(userData.studyDate)).toLocaleString()}</h6></Col>
-                        </Row>
-                        
-                        <br/>
+                      <Form.Item wrapperCol={{ span: 24}}>
+                        <Button style={buttonStyle} htmlType="submit">
+                          <strong>SAVE CHANGES</strong>
+                        </Button >
+                        <br /><br />
+                      </Form.Item>
+                    </Form>
+                  </div>
+                </div>;
 
-                      </div>
-
-                      <Button type="primary" style = {buttonStyle} onClick = {() => {submitUserData()}}>
-                        <strong>SAVE CHANGES</strong> 
-                      </Button>
-
-                      <br/><br/>
-                    </div>
-                  </div>;
-
-  render(){
+  render() {
     var checkLogin = this.authData.login;
-    return(  
-    <div>
-      {
-        checkLogin
-        ? <div>
-            {this.profileField}
-          </div>
-        : <div>
-            <h1 className="text-white" style={{ "textAlign": "center" }} >Please AUTH (Profile page)!</h1>
-            <hr/>
-          </div>
-      }
-    </div>
+    return (
+      <div>
+        {
+          checkLogin
+            ? <div>
+              {this.profileField}
+            </div>
+            : <div>
+              <h1 className="text-white" style={{ "textAlign": "center" }} >Please AUTH (Profile page)!</h1>
+              <hr />
+            </div>
+        }
+      </div>
     );
   }
 }
