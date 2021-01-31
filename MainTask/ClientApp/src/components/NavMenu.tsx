@@ -55,6 +55,10 @@ export default class NavMenu extends React.PureComponent<{}, { isOpen: boolean }
                                             </NavItem>
 
                                             <NavItem>
+                                                <NavLink tag={Link} className="text-white" to="/courses">Courses</NavLink>
+                                            </NavItem>
+
+                                            <NavItem>
                                                 <NavLink className="text-white" onClick={()=>{setLogout()}}>Logout </NavLink>
                                             </NavItem>
                                         </div>

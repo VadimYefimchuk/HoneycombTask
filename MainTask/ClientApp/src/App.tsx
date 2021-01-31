@@ -9,6 +9,7 @@ import Registration from './components/Authorization/Registration';
 import SelectDate from './components/UsersPage/SelectDate';
 import Profile from './components/UsersPage/Profile'
 import Test from './components/UsersPage/test'
+import Courses from './components/UsersPage/Courses'
 
 import "antd/dist/antd.css";
 
@@ -25,5 +26,6 @@ export default () => (
         <Route path='/select' component={SelectDate} />
         <Route path='/profile' component={Profile} />
         <Route path='/test' component={Test} />
+        <Route path='/courses' component={Courses} />
     </Layout>
 );
