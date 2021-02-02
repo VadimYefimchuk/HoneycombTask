@@ -154,13 +154,6 @@ export default class PersonList extends React.Component {
         sorter: (a, b) => a[1].localeCompare(b[1]),
         key: 1,
       },
-      {
-        title: <strong>Start date</strong>,
-        dataIndex: 2,
-        sorter: (a, b) => a[2].localeCompare(b[2]),
-        key: 2,
-        render: (date) => <a>{new Date(Date.parse(date)).toLocaleString()}</a>,
-      },
     ]
 
     return (

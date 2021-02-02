@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using FluentValidation.AspNetCore;
+using MainTask.DAL.Validators;
 
 namespace MainTask
 {
@@ -29,7 +31,9 @@ namespace MainTask
         // This method gets called by the runtime. Use this method to add services to the container.  
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers()
+                .AddFluentValidation(valid => valid.RegisterValidatorsFromAssemblyContaining<StudentValidator>());
+            
 
             // For Entity Framework  
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnStr")));

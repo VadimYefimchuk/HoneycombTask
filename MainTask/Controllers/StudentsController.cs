@@ -28,20 +28,14 @@ namespace MainTask.Controllers
         // GET: api/Students
         [Authorize(Roles = UserRoles.Admin)]
         [HttpGet]
-        public async Task<ActionResult<ResponceDataPage<IEnumerable<Student>>>> GetStudents(int start, int length)
+        public async Task<ActionResult<IEnumerable<Student>>> GetStudents()
         {
-            var stud = await _context.Students
-                .Skip(start)
-                .Take(length)
-                .Include(w => w.Courses)
+            var students = await _context.Students
+                .Include(w => w.StudentsCourses)
+                .ThenInclude(s => s.Course)
                 .ToListAsync();
 
-            var count = _context.Students.Count();
-
-            return new ResponceDataPage<IEnumerable<Student>>(){
-                count = count,
-                data = stud
-            };
+            return students;
         }
 
         [Authorize(Roles = UserRoles.Admin)]
@@ -49,7 +43,10 @@ namespace MainTask.Controllers
         public async Task<ActionResult<ResponceDataPage<IEnumerable<Student>>>> GetSearchStudents(SearchSettings searchSettings)
         {
 
-            var students = _context.Students.Include(w => w.Courses).AsQueryable();
+            var students = _context.Students
+                .Include(w => w.StudentsCourses)
+                .ThenInclude(s => s.Course)
+                .AsQueryable();
 
             if (!String.IsNullOrEmpty(searchSettings.SearchString))
             {
@@ -174,16 +171,16 @@ namespace MainTask.Controllers
 
         async private Task<IQueryable<Student>> ApplySorting(IQueryable<Student> data, string sortOrder, string sortField)
         {
-            if (sortOrder == "asc")
+            switch (sortOrder)
             {
-                return data.SortBy( sortOrder, sortField);
-            }
-            else if (sortOrder == "desc")
-            {
-                return data.SortByDescending(sortOrder, sortField);
-            }
-            return data;
+                case "asc":
+                    return data.SortBy(sortOrder, sortField);
+                case "desc":
+                    return data.SortByDescending(sortOrder, sortField);
+                default:
+                    return data;
 
+            }
         }
 
         

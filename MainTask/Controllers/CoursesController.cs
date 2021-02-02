@@ -29,7 +29,7 @@ namespace MainTask.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Course>>> GetCourses()
         {
-            return _context.Courses.DistinctBy(s => s.CourseName).ToList();
+            return await _context.Courses.ToListAsync();
         }
 
         // GET: api/Courses/5

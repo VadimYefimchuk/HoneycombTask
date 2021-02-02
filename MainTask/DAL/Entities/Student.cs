@@ -18,7 +18,7 @@ namespace MainTask.DAL.Entities
         public DateTime? RegisteredDate{ get; set; }
         public DateTime? StudyDate{ get; set; }
 
-        public List<Course> Courses { get; set; }
+        public List<StudentsCourse> StudentsCourses { get; set; }
 
     }
 }

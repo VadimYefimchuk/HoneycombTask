@@ -10,7 +10,6 @@ export async function getCourses() {
     return axios.get(url + `/api/courses`,
         { headers: { "Authorization": "Bearer " + authData.token } })
         .then(res => {
-            openNotification('success', 'YES!', 'Success');
             const allCourses = res.data.map(data => ({
                 key: data.id,
                 courseName: data.courseName,
@@ -21,6 +20,19 @@ export async function getCourses() {
         })
         .catch((error) => {
             console.error(error.message);
-            openNotification('error', 'ERROR!', 'Current User was NOT changed');
+            openNotification('error', 'ERROR!', 'Courses are empty');
+        });
+}
+
+export async function registerCourses(data) {
+    return axios.put(url + `/api/StudentsCourses/` + userData.id,
+    data,
+    { headers: { "Authorization": "Bearer " + authData.token } })
+        .then(res => {
+            openNotification('success', 'SUCCESS!', res.data.message);
+        })
+        .catch((error) => {
+            console.error(error.message);
+            openNotification('error', 'ERROR!', 'NOT REGISTERED!');
         });
 }

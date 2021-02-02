@@ -96,13 +96,13 @@ export async function getSearchStudents( currentPage, pageSize, searchString = n
                 registeredDate: data.registeredDate,
                 studyDate: data.studyDate,
                 username: data.userName,
-                description: data.courses.map(course => ([
-                    course.courseName,
-                    course.description,
-                    course.startDate,
-                    course.id
+                description: data.studentsCourses.map(course => ([
+                    course.course.courseName,
+                    course.course.description,
+                    course.course.id
                 ])),
             }))
+            console.log(res);
             return {
                 data: newRes, 
                 count: res.data.count

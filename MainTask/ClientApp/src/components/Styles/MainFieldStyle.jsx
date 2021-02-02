@@ -11,7 +11,10 @@ export const buttonStyle = {
     backgroundColor: "#241829", 
     borderRadius: "10px", 
     width:"50%",
-    color: "white"
+    color: "white",
+    display: "block",
+    marginLeft:"auto",
+    marginRight:"auto",
 };
 
 export const inputStyle = {
@@ -20,3 +23,12 @@ export const inputStyle = {
     marginLeft:"auto",
     marginRight:"auto"
 }
+
+export const datePickerStyle = {
+    border: "5px inset #241829",
+    borderRadius: "10px", 
+    width:"50%",
+    display: "block",
+    marginLeft:"auto",
+    marginRight:"auto",
+};

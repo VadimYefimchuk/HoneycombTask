@@ -4,14 +4,16 @@ using MainTask.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MainTask.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210201105543_AddedStudentsCoursesTable")]
+    partial class AddedStudentsCoursesTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -100,7 +102,12 @@ namespace MainTask.Migrations
                     b.Property<string>("ImageURL")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("StudentId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("StudentId");
 
                     b.ToTable("Courses");
                 });
@@ -294,6 +301,13 @@ namespace MainTask.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("MainTask.DAL.Entities.Course", b =>
+                {
+                    b.HasOne("MainTask.DAL.Entities.Student", null)
+                        .WithMany("Courses")
+                        .HasForeignKey("StudentId");
+                });
+
             modelBuilder.Entity("MainTask.DAL.Entities.StudentsCourse", b =>
                 {
                     b.HasOne("MainTask.DAL.Entities.Course", "Course")
@@ -303,7 +317,7 @@ namespace MainTask.Migrations
                         .IsRequired();
 
                     b.HasOne("MainTask.DAL.Entities.Student", "Student")
-                        .WithMany("StudentsCourses")
+                        .WithMany()
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -366,7 +380,7 @@ namespace MainTask.Migrations
 
             modelBuilder.Entity("MainTask.DAL.Entities.Student", b =>
                 {
-                    b.Navigation("StudentsCourses");
+                    b.Navigation("Courses");
                 });
 #pragma warning restore 612, 618
         }

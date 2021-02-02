@@ -8,11 +8,8 @@ namespace MainTask.DAL.Entities
     public class Course
     {
         public int Id { get; set; }
-        public int StudentId { get; set; }
-        public Student Student { get; set; }
         public string CourseName { get; set; }
         public string Description { get; set; }
-        public DateTime StartDate { get; set; }
         public string ImageURL { get; set; }
 
 
