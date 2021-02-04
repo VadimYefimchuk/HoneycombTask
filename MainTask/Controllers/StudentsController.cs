@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Authorization;
 using MainTask.Models.Auth;
 using PagedList;
 using MainTask.DAL.Extensions;
+using Postal;
+using Hangfire;
 
 namespace MainTask.Controllers
 {
@@ -42,6 +44,7 @@ namespace MainTask.Controllers
         [HttpPost("Search")]
         public async Task<ActionResult<ResponceDataPage<IEnumerable<Student>>>> GetSearchStudents(SearchSettings searchSettings)
         {
+            //BackgroundJob.Enqueue(() => SendEmailMessage.SendEmailAsync("makedonsky2105@ukr.net", "Тема письма", "Тест письма: тест!"));
 
             var students = _context.Students
                 .Include(w => w.StudentsCourses)

@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MainTask.DAL;
 
 using NLog.Extensions.Logging;
+using NLog.Web;
 
 namespace MainTask
 {
@@ -27,18 +28,18 @@ namespace MainTask
                 try
                 {
                     var context = services.GetRequiredService<ApplicationDbContext>();
-                    //DbInitializer.Initialize(context);
                 }
                 catch (Exception ex)
                 {
-                    var logger = services.GetRequiredService<ILogger<Program>>();
-                    logger.LogError(ex, "An error occurred while seeding the database.");
+                    //var logger = services.GetRequiredService<ILogger<Program>>();
+                    //logger.LogError(ex, "An error occurred while seeding the database.");
+                    var logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+                    logger.Error(ex, "An error occurred while seeding the database.");
                 }
             }
 
             host.Run();
 
-            //CreateHostBuilder(args).Build().Run();
         }
 
         private static void CreateDbIfNotExists(IHost host)
@@ -53,15 +54,21 @@ namespace MainTask
                 }
                 catch (Exception ex)
                 {
-                    var logger = services.GetRequiredService<ILogger<Program>>();
-                    logger.LogError(ex, "An error occurred creating the DB.");
+                    //var logger = services.GetRequiredService<ILogger<Program>>();
+                    //logger.LogError(ex, "An error occurred creating the DB.");
+                    var logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+                    logger.Error(ex, "An error occurred creating the DB.");
                 }
             }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureLogging((hostingContext, logging) =>
+            Host.CreateDefaultBuilder(args)                
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                })
+                /*.ConfigureLogging((hostingContext, logging) =>
                 {
                     logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
                     logging.AddConsole();
@@ -69,10 +76,19 @@ namespace MainTask
                     logging.AddEventSourceLogger();
                     // Enable NLog as one of the Logging Provider
                     logging.AddNLog();
-                })
-                .ConfigureWebHostDefaults(webBuilder =>
+                })*/
+                .ConfigureLogging((hostingContext, logging) =>
                 {
-                    webBuilder.UseStartup<Startup>();
-                });
+                    logging.ClearProviders();
+                    logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+
+                    //???
+                    logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
+                    logging.AddConsole();
+                    logging.AddDebug();
+                    logging.AddEventSourceLogger();
+                    logging.AddNLog();
+                })
+                .UseNLog();
     }
 }

@@ -18,6 +18,7 @@ namespace MainTask.DAL
         public DbSet<Student> Students { get; set; }
         public DbSet<Course> Courses { get; set; }
         public DbSet<StudentsCourse> StudentsCourses { get; set; }
+        public DbSet<StudentCourseJob> StudentCourseJobs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

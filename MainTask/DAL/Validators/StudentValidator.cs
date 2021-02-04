@@ -14,7 +14,6 @@ namespace MainTask.DAL.Validators
         {
             RuleFor(student => student.Email).NotNull().EmailAddress(); ;
             RuleFor(student => student.UserName).NotNull();
-
             RuleFor(student => student.Age).InclusiveBetween(1, 100);
         }
     }

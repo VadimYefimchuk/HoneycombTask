@@ -9,6 +9,7 @@ using MainTask.DAL;
 using MainTask.DAL.Entities;
 using Microsoft.AspNetCore.Authorization;
 using MainTask.Models.Auth;
+using MainTask.Services;
 
 namespace MainTask.Controllers
 {
@@ -17,10 +18,12 @@ namespace MainTask.Controllers
     public class StudentsCoursesController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly CourseReminder courseReminder;
 
         public StudentsCoursesController(ApplicationDbContext context)
         {
             _context = context;
+            courseReminder = new CourseReminder(context);
         }
 
         // GET: api/StudentsCourses
@@ -56,6 +59,8 @@ namespace MainTask.Controllers
             var findStudentsCourse = await _context.StudentsCourses
                 .Where(x => x.CourseId == studentsCourse.CourseId)
                 .Where(x => x.StudentId == studentsCourse.StudentId)
+                .Include(x => x.Student)
+                .Include(x => x.Course)
                 .FirstOrDefaultAsync();
 
             if (findStudentsCourse == null)
@@ -63,8 +68,11 @@ namespace MainTask.Controllers
                 await PostStudentsCourse(studentsCourse);
                 return Ok(new Response { Status = "Success", Message = "Registration is successfully!" });
             }
-
+                        
             findStudentsCourse.StartDate = studentsCourse.StartDate;
+
+            await courseReminder.DeleteCourseEmailReminder(findStudentsCourse);
+            await courseReminder.CourseEmailReminder(findStudentsCourse);
 
             _context.Entry(findStudentsCourse).State = EntityState.Modified;
 
@@ -96,7 +104,14 @@ namespace MainTask.Controllers
         {
             _context.StudentsCourses.Add(studentsCourse);
             await _context.SaveChangesAsync();
-
+            
+            var thisCourse = await _context.StudentsCourses
+                .Where(x => x.CourseId == studentsCourse.CourseId)
+                .Where(x => x.StudentId == studentsCourse.StudentId)
+                .Include(x => x.Student)
+                .Include(x => x.Course)
+                .FirstOrDefaultAsync();
+            await courseReminder.CourseEmailReminder(thisCourse);
             return CreatedAtAction("GetStudentsCourse", new { id = studentsCourse.Id }, studentsCourse);
         }
 
@@ -110,7 +125,7 @@ namespace MainTask.Controllers
             {
                 return NotFound();
             }
-
+            await courseReminder.DeleteCourseEmailReminder(studentsCourse);
             _context.StudentsCourses.Remove(studentsCourse);
             await _context.SaveChangesAsync();
 

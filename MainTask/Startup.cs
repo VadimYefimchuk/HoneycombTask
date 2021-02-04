@@ -16,6 +16,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using FluentValidation.AspNetCore;
 using MainTask.DAL.Validators;
+using Hangfire;
 
 namespace MainTask
 {
@@ -31,9 +32,13 @@ namespace MainTask
         // This method gets called by the runtime. Use this method to add services to the container.  
         public void ConfigureServices(IServiceCollection services)
         {
+            //FluentValidate
             services.AddControllers()
                 .AddFluentValidation(valid => valid.RegisterValidatorsFromAssemblyContaining<StudentValidator>());
-            
+
+            //Hangfire
+            services.AddHangfire(x => x.UseSqlServerStorage("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=MainTaskDB;Integrated Security=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"));
+            services.AddHangfireServer();
 
             // For Entity Framework  
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnStr")));
@@ -73,6 +78,9 @@ namespace MainTask
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.  
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseHangfireDashboard();
+            app.UseHangfireServer();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
