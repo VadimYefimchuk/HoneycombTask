@@ -11,8 +11,6 @@ using Microsoft.AspNetCore.Authorization;
 using MainTask.Models.Auth;
 using PagedList;
 using MainTask.DAL.Extensions;
-using Postal;
-using Hangfire;
 
 namespace MainTask.Controllers
 {
@@ -44,7 +42,6 @@ namespace MainTask.Controllers
         [HttpPost("Search")]
         public async Task<ActionResult<ResponceDataPage<IEnumerable<Student>>>> GetSearchStudents(SearchSettings searchSettings)
         {
-            //BackgroundJob.Enqueue(() => SendEmailMessage.SendEmailAsync("makedonsky2105@ukr.net", "Тема письма", "Тест письма: тест!"));
 
             var students = _context.Students
                 .Include(w => w.StudentsCourses)
@@ -64,7 +61,7 @@ namespace MainTask.Controllers
                                         x.StudyDate.ToString().ToLower().Contains(searchSettings.SearchString)
                                         );
             }
-            //Paste here
+            //Paste here - Страшно, бо не помню, що мав вставити і чи треба взагалі вставляти
             students = await ApplySorting(students, searchSettings.SortOrder, searchSettings.SortField);
 
             return new ResponceDataPage<IEnumerable<Student>>() { 

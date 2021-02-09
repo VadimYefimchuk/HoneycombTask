@@ -17,6 +17,7 @@ using System.Text;
 using FluentValidation.AspNetCore;
 using MainTask.DAL.Validators;
 using Hangfire;
+using MainTask.Services;
 
 namespace MainTask
 {
@@ -51,6 +52,7 @@ namespace MainTask
             services.AddControllers().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
+
             // Adding Authentication  
             services.AddAuthentication(options =>
             {
@@ -58,8 +60,11 @@ namespace MainTask
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-
-            // Adding Jwt Bearer  
+            .AddFacebook(facebookOptions =>
+            {
+                facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
+                facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+            })
             .AddJwtBearer(options =>
             {
                 options.SaveToken = true;
@@ -73,6 +78,9 @@ namespace MainTask
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))
                 };
             });
+            services.AddControllersWithViews();
+            services.AddRazorPages();
+            services.AddScoped<IViewRenderService, ViewRenderService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.  

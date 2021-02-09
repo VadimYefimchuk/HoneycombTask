@@ -27,7 +27,7 @@ export default class Courses extends React.Component {
         super();
         this.state = {
             courses: [],
-            courseStartDate: '2021-01-01 00:00:00',
+            courseStartDate: new Date(),
         }
         this.userData = JSON.parse(localStorage.getItem('userData'));
         this.authData = JSON.parse(localStorage.getItem('login'));
@@ -75,10 +75,9 @@ export default class Courses extends React.Component {
 
                     />
                     <DatePicker 
-                    value = {moment(this.state.courseStartDate, 'YYYY-MM-DD HH:mm:ss')}
+                    value = {moment(this.state.courseStartDate, 'YYYY-MM-DD')}
                     style={datePickerStyle} 
-                    onChange={(event)=>{this.setState({courseStartDate:event._d})}} 
-                    showTime 
+                    onChange={(event)=>{event != null ? this.setState({courseStartDate:event._d}) : this.setState({courseStartDate: new Date()}) }}  
                     />
                     <br />
                     <Button type="primary" style={buttonStyle} onClick={() => { this.registerCourse(course.key) }}>

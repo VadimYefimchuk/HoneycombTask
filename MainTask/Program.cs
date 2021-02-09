@@ -68,21 +68,13 @@ namespace MainTask
                 {
                     webBuilder.UseStartup<Startup>();
                 })
-                /*.ConfigureLogging((hostingContext, logging) =>
-                {
-                    logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
-                    logging.AddConsole();
-                    logging.AddDebug();
-                    logging.AddEventSourceLogger();
-                    // Enable NLog as one of the Logging Provider
-                    logging.AddNLog();
-                })*/
+                
                 .ConfigureLogging((hostingContext, logging) =>
                 {
                     logging.ClearProviders();
                     logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
 
-                    //???
+                    //added middlewere
                     logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
                     logging.AddConsole();
                     logging.AddDebug();

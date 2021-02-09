@@ -11,7 +11,5 @@ namespace MainTask.DAL.Entities
         public int StudentId { get; set; }
         public int CourseId { get; set; }
         public string JobId { get; set; }
-
-        public int DaysToStart { get; set; }
     }
 }

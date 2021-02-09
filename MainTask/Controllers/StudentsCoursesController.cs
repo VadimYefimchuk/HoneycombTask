@@ -20,10 +20,10 @@ namespace MainTask.Controllers
         private readonly ApplicationDbContext _context;
         private readonly CourseReminder courseReminder;
 
-        public StudentsCoursesController(ApplicationDbContext context)
+        public StudentsCoursesController(ApplicationDbContext context, IViewRenderService viewRenderService)
         {
             _context = context;
-            courseReminder = new CourseReminder(context);
+            courseReminder = new CourseReminder(context, viewRenderService);
         }
 
         // GET: api/StudentsCourses
