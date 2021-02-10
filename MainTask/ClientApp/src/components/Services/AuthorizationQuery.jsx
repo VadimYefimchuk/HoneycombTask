@@ -7,6 +7,24 @@ export var url = window.location.href.replace(window.location.pathname, "");
 export let authData = JSON.parse(localStorage.getItem('login')) | null;
 export let userData = JSON.parse(localStorage.getItem('userData')) | null;
 
+export function sendFacebookLogin(state) {
+  axios.post(url + "/api/authenticate/facebook", state)
+    .then((res) => {
+      console.log(res.data);
+      localStorage.setItem('login', JSON.stringify({
+        login: true,
+        token: res.data.token,
+        role: res.data.role,
+        uName: res.data.uName
+      }));
+      authData = JSON.parse(localStorage.getItem('login'));
+      getUserInfo();
+    })
+    .catch((error) => {
+      console.error(error);
+      openNotification('error', 'ERROR!', 'Not logged in');
+    });
+}
 
 export function sendLogin(state) {
   axios.post(url + "/api/authenticate/login", state)
@@ -18,9 +36,7 @@ export function sendLogin(state) {
         role: res.data.role,
         uName: res.data.uName
       }));
-
       authData = JSON.parse(localStorage.getItem('login'));
-
       getUserInfo();
     })
     .catch((error) => {
@@ -42,10 +58,9 @@ export function getUserInfo() {
         lastName: res.data.lastName,
         age: res.data.age,
         registeredDate: res.data.registeredDate,
-        studyDate: res.data.studyDate,
       }));
 
-      window.location.href = "/select";
+      window.location.href = "/courses";
     })
     .catch((error) => {
       console.error(error);
@@ -66,7 +81,6 @@ export async function updateUserInfo(data = authData) {
         lastName: res.data.lastName,
         age: res.data.age,
         registeredDate: res.data.registeredDate,
-        studyDate: res.data.studyDate,
       }));
       var uData = localStorage.getItem('userData');
       return uData;
@@ -104,7 +118,6 @@ export function setLogout() {
     lastName: null,
     age: null,
     registeredDate: null,
-    studyDate: null
   }));
   window.location.href = "/login";
 }

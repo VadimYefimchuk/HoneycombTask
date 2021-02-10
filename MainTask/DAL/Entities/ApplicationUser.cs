@@ -8,5 +8,6 @@ namespace MainTask.DAL.Entities
 {
     public class ApplicationUser: IdentityUser
     {
+        public Student Student { get; set; }
     }
 }

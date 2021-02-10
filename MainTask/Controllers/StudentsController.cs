@@ -57,11 +57,10 @@ namespace MainTask.Controllers
                                         x.LastName.ToLower().Contains(searchSettings.SearchString) ||
                                         x.Email.ToLower().Contains(searchSettings.SearchString) ||
                                         x.Age.ToString().ToLower().Contains(searchSettings.SearchString) ||
-                                        x.RegisteredDate.ToString().ToLower().Contains(searchSettings.SearchString) ||
-                                        x.StudyDate.ToString().ToLower().Contains(searchSettings.SearchString)
+                                        x.RegisteredDate.ToString().ToLower().Contains(searchSettings.SearchString)
                                         );
             }
-            //Paste here - Страшно, бо не помню, що мав вставити і чи треба взагалі вставляти
+
             students = await ApplySorting(students, searchSettings.SortOrder, searchSettings.SortField);
 
             return new ResponceDataPage<IEnumerable<Student>>() { 
@@ -171,16 +170,11 @@ namespace MainTask.Controllers
 
         async private Task<IQueryable<Student>> ApplySorting(IQueryable<Student> data, string sortOrder, string sortField)
         {
-            switch (sortOrder)
+            if (!String.IsNullOrEmpty(sortOrder) && !String.IsNullOrEmpty(sortField))
             {
-                case "asc":
-                    return data.SortBy(sortOrder, sortField);
-                case "desc":
-                    return data.SortByDescending(sortOrder, sortField);
-                default:
-                    return data;
-
+                return data.SortBy(sortOrder, sortField);
             }
+            return data;
         }
 
         

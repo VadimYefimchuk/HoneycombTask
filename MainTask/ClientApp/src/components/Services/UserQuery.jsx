@@ -59,7 +59,6 @@ export async function getStudents(start, length) {
                 age: data.age,
                 email: data.email,
                 registeredDate: data.registeredDate,
-                studyDate: data.studyDate,
                 username: data.userName,
                 description: data.courses.map(course => ([
                     course.courseName,
@@ -94,7 +93,6 @@ export async function getSearchStudents( currentPage, pageSize, searchString = n
                 age: data.age,
                 email: data.email,
                 registeredDate: data.registeredDate,
-                studyDate: data.studyDate,
                 username: data.userName,
                 description: data.studentsCourses.map(course => ([
                     course.course.courseName,

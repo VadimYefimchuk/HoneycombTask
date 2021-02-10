@@ -2,67 +2,55 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import UserList from './UserList'
 import App from './test'
+import { Result, Button} from 'antd'
+import { Link } from 'react-router-dom';
 
-export default class AdminsTable extends React.Component{
+export default class AdminsTable extends React.Component {
 
   constructor() {
     super();
     this.authData = JSON.parse(localStorage.getItem('login'));
-    //console.log(this.authData);
-  }
-
-  checkRole(){
-    if(this.authData.role == "Admin"){
-      return(
-        <div>
-          <h1>Admins table</h1>
-          <hr/>
-          <Test/>
-        </div>
-      )
-    }
-    else{
-      <div>
-        <h1 className="text-white" style ={{"textAlign":"center"}}>You are not ADMIN!</h1>
-        <hr/>
-      </div>
-    }
   }
 
   mainStyle = {
-    textAlign:"center",
-    marginLeft:"auto",
-    marginRight:"auto",
-    width:"50%",
-    backgroundColor:"white", 
+    textAlign: "center",
+    marginLeft: "auto",
+    marginRight: "auto",
+    width: "50%",
+    backgroundColor: "white",
     borderRadius: "20px"
   };
 
-  render(){
+  render() {
     var checkRole = this.authData.role == "Admin";
     var checkLogin = this.authData.login;
-    return(
+    return (
       <div>
         {
-        checkLogin
-        ? 
-          checkRole
-          ? <div>
-              <h1 className="text-white" style ={{"textAlign":"center"}}>Admins table</h1>
-              <hr/>
-              <div id="testModal"></div>
-              <UserList/>
+          checkLogin
+            ?
+            checkRole
+              ? <div>
+                <h1 className="text-white" style={{ "textAlign": "center" }}>Admins table</h1>
+                <hr />
+                <div id="testModal"></div>
+                <UserList />
+              </div>
+              : <div>
+                <h1 className="text-white" style={{ "textAlign": "center" }}>You are not ADMIN!</h1>
+                {window.location.href = "/profile"}
+                <hr />
+              </div>
+
+            : <div>
+              <Result
+                status="404"
+                title="404"
+                subTitle="Sorry, the page you visited does not exist."
+                extra={<Button /*onClick = {() => {window.location.href = "/login"}}*/ type="primary"><Link to="/register">register now!</Link></Button>}
+              />
             </div>
-          : <div>
-              <h1>You are not ADMIN!</h1>
-              <hr/>
-            </div>
-        
-        : <div>
-            <h1 className="text-white" style ={{"textAlign":"center"}}>Please AUTH (Admin page)!</h1>
-            <hr/>
-          </div>
-      }
+        }
       </div>
     );
   };

@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Table, Row, Col, Pagination } from 'antd';
+import { Table, Row, Col, Pagination, Spin } from 'antd';
 import { EditFilled } from '@ant-design/icons'
 import { changeCurrentUser, getSearchStudents } from '../Services/UserQuery'
 import { openNotification } from '../Services/Notifications'
@@ -57,13 +57,6 @@ export default class PersonList extends React.Component {
       render: (date) => <a>{new Date(Date.parse(date)).toLocaleString()}</a>,
     },
     {
-      title: 'StudyDate',
-      dataIndex: 'studyDate',
-      sorter: true,
-      key: 'studyDate',
-      render: (date) => <a>{new Date(Date.parse(date)).toLocaleString()}</a>,
-    },
-    {
       title: 'Operation',
       dataIndex: 'operation',
       render: (_, record) => {
@@ -79,6 +72,7 @@ export default class PersonList extends React.Component {
   constructor() {
     super();
     this.state = {
+      loading: false,
       persons: [],
       isModalVisible: false,
       searchData: '',
@@ -128,15 +122,17 @@ export default class PersonList extends React.Component {
     const fullPersons = await getSearchStudents(current, pageSize, value, sortOrder, sortField);
     this.setState({ persons: fullPersons.data });
     this.setState({ dataCount: fullPersons.count });
+    this.setState({loading: false});
   }
 
   onChangeSearch = (value) => {
+    this.setState({loading: true});
     if (value != this.state.searchData) {
       this.setState({ searchData: value });
       this.setState({ currentPage: 1 });
     }
 
-    openNotification('info', 'SEARCH!', 'Searching!', 1.5);
+    //openNotification('info', 'SEARCH!', 'Searching!', 1.5);
     this.onSearch(this.state.currentPage, this.state.pageSize, this.state.sortOrder, this.state.sortField, value);
   }
 
@@ -166,7 +162,7 @@ export default class PersonList extends React.Component {
   }
 
   onChangeTable = (pagination, filters, sorter, extra) => {
-    openNotification('info', 'WAITING!', 'Please waiting!', 1.5);
+    this.setState({loading: true});
     var sorterBy = null;
     if (sorter.order == 'ascend') {
       sorterBy = 'asc';
@@ -198,7 +194,6 @@ export default class PersonList extends React.Component {
       lastName: this.state.currentUser.lastName,
       age: this.state.currentUser.age,
       registeredDate: moment(this.state.currentUser.registeredDate, 'YYYY-MM-DD HH:mm:ss'),
-      studyDate: moment(this.state.currentUser.studyDate, 'YYYY-MM-DD HH:mm:ss'),
     });
   };
 
@@ -208,8 +203,7 @@ export default class PersonList extends React.Component {
     this.currentUser.lastName = value.lastName;
     this.currentUser.age = value.age;
     this.currentUser.registeredDate = value.registeredDate._d.toISOString();
-    this.currentUser.studyDate = value.studyDate._d.toISOString();
-    
+
     this.setState({ currentUser: this.currentUser });
 
     changeCurrentUser(this.state.currentUser);
@@ -221,119 +215,108 @@ export default class PersonList extends React.Component {
   render() {
     return (
       <div>
-        <Search
-          placeholder="input search text"
-          allowClear
-          enterButton="Search"
-          size="large"
-          onSearch={this.onChangeSearch}
-        />
-        <br /><br />
-        <Table
-          onChange={this.onChangeTable}
-          pagination={{
-            position: ["topRight", "bottomRight"],
-            pageSize: this.state.pageSize,
-            current: this.state.currentPage,
-            total: this.state.dataCount,
-          }}
-          columns={this.columns}
-          expandable={{
-            expandedRowRender: record => this.expandableRowContent(record.description),
-            rowExpandable: record => record.description.length !== 0,
-          }}
-          dataSource={this.state.persons}
-        />
-        <Modal
-          footer={false}
-          forceRender={true}
-          title="Change current user"
-          visible={this.state.isModalVisible}
-          width="30%"
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}>
+        <Spin spinning={this.state.loading}>
+          <Search
+            placeholder="input search text"
+            allowClear
+            enterButton="Search"
+            size="large"
+            onSearch={this.onChangeSearch}
+          />
+          <br /><br />
+          <Table
+            onChange={this.onChangeTable}
+            pagination={{
+              position: ["topRight", "bottomRight"],
+              pageSize: this.state.pageSize,
+              current: this.state.currentPage,
+              total: this.state.dataCount,
+            }}
+            columns={this.columns}
+            expandable={{
+              expandedRowRender: record => this.expandableRowContent(record.description),
+              rowExpandable: record => record.description.length !== 0,
+            }}
+            dataSource={this.state.persons}
+          />
+          <Modal
+            footer={false}
+            forceRender={true}
+            title="Change current user"
+            visible={this.state.isModalVisible}
+            width="30%"
+            onOk={this.handleOk}
+            onCancel={this.handleCancel}>
 
-          <Form
+            <Form
 
-            ref={this.formRef}
-            name="normal_login"
-            initialValues={this.onFill}
-            onFinish={this.onSubmit}
+              ref={this.formRef}
+              name="normal_login"
+              initialValues={this.onFill}
+              onFinish={this.onSubmit}
 
-          >
-            <Form.Item
-              name="name"
-              rules={[
-                {
-                  required: true,
-                  message: 'Please input your Name!',
-                },
-              ]}
             >
-              <Input placeholder="Name" />
-            </Form.Item>
+              <Form.Item
+                name="name"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please input your Name!',
+                  },
+                ]}
+              >
+                <Input placeholder="Name" />
+              </Form.Item>
 
-            <Form.Item
-              name="lastName"
-              rules={[
-                {
-                  required: true,
-                  message: 'Please input your LastName!',
-                },
-              ]}
-            >
-              <Input placeholder="LastName" />
-            </Form.Item>
+              <Form.Item
+                name="lastName"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please input your LastName!',
+                  },
+                ]}
+              >
+                <Input placeholder="LastName" />
+              </Form.Item>
 
-            <Form.Item
-              name="age"
-              rules={[
-                {
-                  type: 'number', min: 0, max: 99,
-                  required: true,
-                  message: 'Please input your Age!',
-                },
-              ]}
-            >
-              <InputNumber style={{ width: "100%" }} placeholder="Age" />
-            </Form.Item>
+              <Form.Item
+                name="age"
+                rules={[
+                  {
+                    type: 'number', min: 0, max: 99,
+                    required: true,
+                    message: 'Please input your Age!',
+                  },
+                ]}
+              >
+                <InputNumber style={{ width: "100%" }} placeholder="Age" />
+              </Form.Item>
 
-            <Form.Item
-              name="registeredDate"
-              rules={[
-                {
-                  type: 'object',
-                  required: true,
-                  message: 'Please select registeredDate time!',
-                },
-              ]}
-            >
-              <DatePicker style={{ width: "100%" }} showTime />
-            </Form.Item>
+              <Form.Item
+                name="registeredDate"
+                rules={[
+                  {
+                    type: 'object',
+                    required: true,
+                    message: 'Please select registeredDate time!',
+                  },
+                ]}
+              >
+                <DatePicker style={{ width: "100%" }} showTime />
+              </Form.Item>
 
-            <Form.Item
-              name="studyDate"
-              rules={[
-                {
-                  type: 'object',
-                  required: true,
-                  message: 'Please select studyDate time!',
-                },
-              ]}
-            >
-              <DatePicker style={{ width: "100%" }} showTime />
-            </Form.Item>
+              <Form.Item>
+                <div style={{ textAlign: "center" }}>
+                  <Button style={buttonStyle} htmlType="submit">
+                    <strong>SAVE CHANGES</strong>
+                  </Button >
+                </div>
+              </Form.Item>
+            </Form>
 
-            <Form.Item>
-              <div style={{ textAlign: "center" }}>
-                <Button style={buttonStyle} htmlType="submit">
-                  <strong>SAVE CHANGES</strong>
-                </Button >
-              </div>
-            </Form.Item>
-          </Form>
-
-        </Modal>
+          </Modal>
+        </Spin>
       </div>
     )
   }

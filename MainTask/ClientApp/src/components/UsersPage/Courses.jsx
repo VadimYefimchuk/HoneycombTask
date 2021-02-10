@@ -8,6 +8,7 @@ import moment from 'moment';
 
 import { areaStyle, buttonStyle, datePickerStyle } from '../Styles/MainFieldStyle';
 import { title } from 'process';
+import { Result} from 'antd';
 
 const { Meta } = Card;
 
@@ -40,7 +41,7 @@ export default class Courses extends React.Component {
     }
 
     registerCourse = (courseId) => {
-        if (this.state.courseStartDate == null || this.state.courseStartDate == ''){
+        if (this.state.courseStartDate == null || this.state.courseStartDate == '') {
             openNotification('error', 'ERROR DATE!', 'Please select date for current course!');
         }
         else {
@@ -74,10 +75,10 @@ export default class Courses extends React.Component {
                         title={course.courseName} description={course.description}
 
                     />
-                    <DatePicker 
-                    value = {moment(this.state.courseStartDate, 'YYYY-MM-DD')}
-                    style={datePickerStyle} 
-                    onChange={(event)=>{event != null ? this.setState({courseStartDate:event._d}) : this.setState({courseStartDate: new Date()}) }}  
+                    <DatePicker
+                        value={moment(this.state.courseStartDate, 'YYYY-MM-DD')}
+                        style={datePickerStyle}
+                        onChange={(event) => { event != null ? this.setState({ courseStartDate: event._d }) : this.setState({ courseStartDate: new Date() }) }}
                     />
                     <br />
                     <Button type="primary" style={buttonStyle} onClick={() => { this.registerCourse(course.key) }}>
@@ -108,8 +109,12 @@ export default class Courses extends React.Component {
                         </div>
                         :
                         <div>
-                            <h1 className="text-white" style={{ "textAlign": "center" }}>Please AUTH (Courses page)!</h1>
-                            <hr />
+                            <Result
+                                status="403"
+                                title="403"
+                                subTitle="Sorry, you are not authorized to access this page."
+                                extra={<Button onClick = {() => {window.location.href = "/login"}} type="primary">LOG IN</Button>}
+                            />
                         </div>
                 }
             </div>

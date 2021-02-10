@@ -2,16 +2,23 @@ import * as React from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import { Form, Input, Button, Checkbox } from 'antd';
-//import { UserOutlined, KeyOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { useHistory } from "react-router-dom";
 import { areaStyle, buttonStyle, inputStyle } from '../Styles/MainFieldStyle'
-import { sendLogin } from '../Services/AuthorizationQuery'
+import { sendLogin, sendFacebookLogin } from '../Services/AuthorizationQuery'
 import { ApplicationState } from '../../store';
 import * as loginDataStore from '../../store/reducers/loginData';
 import { RouteComponentProps } from 'react-router';
+import FacebookAuthorization from './FacebookAuthorization';
 
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
+
+const BtnFacebook = `
+    width: 165px;
+    height:35px;  
+    border-radius: 4px;    
+`;
+
 
 export default class Login extends React.Component {
   constructor() {
@@ -29,6 +36,8 @@ export default class Login extends React.Component {
   onFinish = (values) => {
     console.log('Received values of form: ', values);
   };
+
+  
 
   render() {
     return (
@@ -80,11 +89,15 @@ export default class Login extends React.Component {
               <Button style={buttonStyle} htmlType="submit">
                 <strong>LOG IN</strong>
               </Button >
+              <br />
+              <FacebookAuthorization/>
               <br /><br />
               Or <Link to="/register">register now!</Link>
               <br /><br />
             </Form.Item>
           </Form>
+
+
         </div>
       </div>)
   };

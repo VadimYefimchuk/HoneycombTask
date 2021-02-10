@@ -20,12 +20,8 @@ export default () => (
         <Route exact path='/' component={SelectDate} />
         <Route path='/login' component={Login} />
         <Route path='/admin' component={AdminsTable} />
-        <Route path='/fetch-data/:startDateIndex?' component={FetchData} />
-        <Route path='/counter' component={Counter} />
         <Route path='/register' component={Registration} />
-        <Route path='/select' component={SelectDate} />
         <Route path='/profile' component={Profile} />
-        <Route path='/test' component={Test} />
         <Route path='/courses' component={Courses} />
     </Layout>
 );

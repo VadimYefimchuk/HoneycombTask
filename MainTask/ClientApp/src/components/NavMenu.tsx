@@ -44,11 +44,7 @@ export default class NavMenu extends React.PureComponent<{}, { isOpen: boolean }
                                     checkLogin
                                     ?
                                         <div style={{display: "flex", fontWeight:"bolder"}}>
-                                            {checkRole ? this.adminMenu : <div></div> }       
-
-                                            <NavItem>
-                                                <NavLink tag={Link} className="text-white" to="/select">Select Date</NavLink>
-                                            </NavItem>
+                                            {checkRole ? this.adminMenu : <div></div> } 
 
                                             <NavItem>
                                                 <NavLink tag={Link} className="text-white" to="/profile">Profile</NavLink>

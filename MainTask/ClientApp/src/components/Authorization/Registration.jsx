@@ -1,10 +1,10 @@
 import * as React from 'react';
-import axios from 'axios';
 import { Form, Input, Button, Checkbox } from 'antd';
 import { UserOutlined, LockOutlined, IeOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-import { areaStyle, buttonStyle, inputStyle } from '../Styles/MainFieldStyle'
-import { sendRegister } from '../Services/AuthorizationQuery'
+import { areaStyle, buttonStyle, inputStyle } from '../Styles/MainFieldStyle';
+import { sendRegister } from '../Services/AuthorizationQuery';
+import FacebookAuthorization from './FacebookAuthorization';
 
 
 
@@ -18,7 +18,6 @@ export default class Registration extends React.Component {
       login: false,
       store: null
     };
-    //this.url = window.location.href.replace(window.location.pathname,"");
   }
 
   render() {
@@ -80,6 +79,8 @@ export default class Registration extends React.Component {
               <Button style={buttonStyle} htmlType="submit">
                 <strong>REGISTRATION</strong>
               </Button >
+              <br />
+              <FacebookAuthorization/>
               <br /><br />
               Or <Link to="/login">Log in!</Link>
               <br /><br />

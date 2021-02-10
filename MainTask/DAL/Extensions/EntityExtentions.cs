@@ -13,10 +13,5 @@ namespace MainTask.DAL.Extensions
             return query.OrderBy($"{sortField} {sortOrder}");
         }
 
-        public static IQueryable<TEntity> SortByDescending<TEntity>(this IQueryable<TEntity> query, string sortOrder, string sortField) where TEntity : class
-        {
-            return query.OrderBy($"{sortField} {sortOrder}");
-        }
-
     }
 }
