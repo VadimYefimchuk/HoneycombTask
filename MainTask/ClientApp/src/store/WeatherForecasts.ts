@@ -1,6 +1,7 @@
+
 import { Action, Reducer } from 'redux';
 import { AppThunkAction } from '.';
-
+/*
 export interface WeatherForecastsState {
     isLoading: boolean;
     startDateIndex?: number;
@@ -69,3 +70,4 @@ export const reducer: Reducer<WeatherForecastsState> = (state: WeatherForecastsS
 
     return state;
 };
+*/

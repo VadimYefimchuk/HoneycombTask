@@ -1,22 +1,22 @@
 import React from 'react'
-import { getCourses, registerCourses } from '../Services/CoursesQuery'
+import { getCourses, registerCourses, getStudentCourses } from '../Services/CoursesQuery'
 import { openNotification } from '../Services/Notifications'
 import { Carousel, Card, Button, Modal, DatePicker } from 'antd';
 import { Avatar } from 'antd';
 import { EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
 import moment from 'moment';
 
-import { areaStyle, buttonStyle, datePickerStyle } from '../Styles/MainFieldStyle';
 import { title } from 'process';
-import { Result} from 'antd';
+import { Result } from 'antd';
+import '../Styles/ButtonStyle.css'
+import { areaStyle, inputStyle, buttonStyle, datePickerStyle } from '../Styles/MainFieldStyle'
+import { Link } from 'react-router-dom';
+
+
 
 const { Meta } = Card;
 
 const contentStyle = {
-
-    //height: '80%',
-    //width: '80%',
-    //color: '#fff',
     lineHeight: '160px',
     textAlign: 'center',
     marginLeft: "auto",
@@ -28,6 +28,7 @@ export default class Courses extends React.Component {
         super();
         this.state = {
             courses: [],
+            currentStudentsCourses: [],
             courseStartDate: new Date(),
         }
         this.userData = JSON.parse(localStorage.getItem('userData'));
@@ -35,12 +36,15 @@ export default class Courses extends React.Component {
     }
 
     async componentDidMount() {
-        var courses = await getCourses();
-        this.setState({ courses: courses })
-
+        if (this.authData.login) {
+            var courses = await getCourses();
+            this.setState({ courses: courses });
+            var currentStudentsCourses = await getStudentCourses();
+            this.setState({ currentStudentsCourses: currentStudentsCourses });
+        }
     }
 
-    registerCourse = (courseId) => {
+    async registerCourse(courseId) {
         if (this.state.courseStartDate == null || this.state.courseStartDate == '') {
             openNotification('error', 'ERROR DATE!', 'Please select date for current course!');
         }
@@ -50,9 +54,35 @@ export default class Courses extends React.Component {
                 courseId: courseId,
                 startDate: this.state.courseStartDate,
             }
-            console.log(courseData);
-            registerCourses(courseData);
+            await registerCourses(courseData);
+            await this.componentDidMount();
+            this.getAllCourses();
         }
+    }
+
+
+    checkCourseSubscribe = (key) => {
+        var subscribe = (
+            <div>
+                <h4 style={{ color: "Red", textAlign: "center" }}>
+                    <strong>You are NOT subscribed</strong>
+                </h4>
+            </div>
+        );
+        this.state.currentStudentsCourses.map(currentCourse => {
+            if (currentCourse.courseId == key) {
+                subscribe = (
+                    <div>
+                        <h4 style={{ color: "Green", textAlign: "center" }} >
+                            <strong>
+                                You are subscribed
+                            </strong>
+                        </h4>
+                    </div >
+                )
+            }
+        })
+        return subscribe;
     }
 
     getAllCourses = () => {
@@ -73,15 +103,15 @@ export default class Courses extends React.Component {
                     <Meta style={{ height: 150 }}
                         avatar={<Avatar src="https://www.vhv.rs/dpng/d/50-504209_daenerys-targaryen-transparent-background-hd-png-download.png" />}
                         title={course.courseName} description={course.description}
-
                     />
+                    {this.checkCourseSubscribe(course.key)}
                     <DatePicker
                         value={moment(this.state.courseStartDate, 'YYYY-MM-DD')}
                         style={datePickerStyle}
                         onChange={(event) => { event != null ? this.setState({ courseStartDate: event._d }) : this.setState({ courseStartDate: new Date() }) }}
                     />
                     <br />
-                    <Button type="primary" style={buttonStyle} onClick={() => { this.registerCourse(course.key) }}>
+                    <Button type="primary" className="buttonStyle" onClick={() => { this.registerCourse(course.key) }}>
                         <strong>SELECT START DATE</strong>
                     </Button>
                 </Card>
@@ -108,12 +138,12 @@ export default class Courses extends React.Component {
                             </Carousel>
                         </div>
                         :
-                        <div>
+                        <div style={areaStyle}>
                             <Result
                                 status="403"
                                 title="403"
                                 subTitle="Sorry, you are not authorized to access this page."
-                                extra={<Button onClick = {() => {window.location.href = "/login"}} type="primary">LOG IN</Button>}
+                                extra={<Button type="primary"><Link to="/login">Login now!</Link></Button>}
                             />
                         </div>
                 }

@@ -1,6 +1,7 @@
 ﻿using MainTask.Controllers;
 using MainTask.DAL;
 using MainTask.DAL.Entities;
+using MainTask.DAL.Extensions;
 using MainTask.Models;
 using MainTask.Models.Auth;
 using Microsoft.AspNetCore.Authorization;
@@ -17,12 +18,13 @@ using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace JWTAuthentication.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthenticateController : ControllerBase
+    public class AuthenticateController : Controller
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly RoleManager<IdentityRole> roleManager;
@@ -30,6 +32,8 @@ namespace JWTAuthentication.Controllers
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly HttpClient httpClient;
         private readonly ApplicationDbContext _context;
+        private readonly EmailSender emailSender;
+        private readonly StudentsController studentsController;
 
         public AuthenticateController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, SignInManager<ApplicationUser> signInManager, ApplicationDbContext context)
         {
@@ -39,6 +43,8 @@ namespace JWTAuthentication.Controllers
             this.signInManager = signInManager;
             httpClient = new HttpClient();
             _context = context;
+            emailSender = new EmailSender();
+            studentsController = new StudentsController(_context);
         }
 
         
@@ -77,7 +83,7 @@ namespace JWTAuthentication.Controllers
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
             var user = await userManager.FindByNameAsync(model.Username);
-            if (user != null && await userManager.CheckPasswordAsync(user, model.Password))
+            if (user != null && await userManager.CheckPasswordAsync(user, model.Password) && user.EmailConfirmed == true)
             {
                 var userRoles = await userManager.GetRolesAsync(user);
 
@@ -188,6 +194,10 @@ namespace JWTAuthentication.Controllers
                 await userManager.AddToRoleAsync(user, UserRoles.User);
             }
 
+            var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
+            var linkToConfirmEmail = "https://localhost:44339/api/authenticate/confirmemail?token=" + HttpUtility.UrlEncode(code) + "&username=" + user.UserName;
+            await emailSender.SendEmailAsync(user.Email, "Confirm Email", linkToConfirmEmail);
+
             return StatusCode(StatusCodes.Status200OK);
         }
         private async Task<IActionResult> RegisterFacebook(RegisterModel model, FacebookUserModel facebookUserModel)
@@ -219,15 +229,7 @@ namespace JWTAuthentication.Controllers
             {
                 await userManager.AddToRoleAsync(user, UserRoles.User);
             }
-            var studentModel = new Student()
-            {
-                UserName = model.Email,
-                Email = model.Email,
-                Name = facebookUserModel.First_name,
-                LastName = facebookUserModel.Last_name
-            };
-            var studentsController = new StudentsController( _context);
-            await studentsController.PostStudent(studentModel);
+            await AddNewStudent(user.Email, user.UserName);
 
             return StatusCode(StatusCodes.Status200OK);
         }
@@ -267,8 +269,39 @@ namespace JWTAuthentication.Controllers
             {
                 await userManager.AddToRoleAsync(user, UserRoles.Admin);
             }
+            await AddNewStudent(user.Email, user.UserName);
 
             return StatusCode(StatusCodes.Status200OK);
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("confirmemail")]
+        public async Task<String> ConfirmEmail(string Token, string Username)
+        {
+            var user = await userManager.FindByNameAsync(Username);
+            if (user != null)
+            {
+                var checkConfirm = await userManager.ConfirmEmailAsync(user, Token);
+                await AddNewStudent(user.Email, user.UserName);
+                return "Email CONFIRMED";
+
+            }
+            else
+            {
+                return "Email NOT CONFIRMED";
+            }
+        }
+
+        public async Task AddNewStudent(string email, string username)
+        {
+            var studentModel = new Student()
+            {
+                UserName = username,
+                Email = email
+            };
+
+            await studentsController.PostStudent(studentModel);
         }
     }
 }

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
+/*import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { ApplicationState } from '../store';
 import * as CounterStore from '../store/Counter';
@@ -19,19 +19,6 @@ type CounterProps =
   RouteComponentProps<{}>;
 
 class Counter extends React.PureComponent<CounterProps> {
-  Facebook = () => {
-    const data = {
-      provider: "Facebook",
-      returnUrl: ""
-    }
-    axios.post(window.location.href.replace(window.location.pathname, "") + "/api/authenticate/facebook", data)
-      .then((res) => {
-        console.log(res.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-  };
 
   responseFacebook = (response: any) => {
     console.log(response);
@@ -60,3 +47,4 @@ export default connect(
   (state: ApplicationState) => state.counter,
   CounterStore.actionCreators
 )(Counter);
+*/

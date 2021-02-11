@@ -2,8 +2,10 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import UserList from './UserList'
 import App from './test'
-import { Result, Button} from 'antd'
+import { Result, Button } from 'antd'
 import { Link } from 'react-router-dom';
+import { areaStyle, inputStyle, buttonStyle } from '../Styles/MainFieldStyle'
+
 
 export default class AdminsTable extends React.Component {
 
@@ -36,18 +38,21 @@ export default class AdminsTable extends React.Component {
                 <div id="testModal"></div>
                 <UserList />
               </div>
-              : <div>
-                <h1 className="text-white" style={{ "textAlign": "center" }}>You are not ADMIN!</h1>
-                {window.location.href = "/profile"}
-                <hr />
+              : <div style={areaStyle}>
+                <Result
+                  status="403"
+                  title="403"
+                  subTitle="Sorry, you are not authorized to access this page."
+                  extra={<Button  style={buttonStyle} type="primary"><Link to="/courses">Courses!</Link></Button>}
+                />
               </div>
 
-            : <div>
+            : <div style={areaStyle}>
               <Result
                 status="404"
                 title="404"
                 subTitle="Sorry, the page you visited does not exist."
-                extra={<Button /*onClick = {() => {window.location.href = "/login"}}*/ type="primary"><Link to="/register">register now!</Link></Button>}
+                extra={<Button style={buttonStyle} type="primary"><Link to="/register">Register now!</Link></Button>}
               />
             </div>
         }

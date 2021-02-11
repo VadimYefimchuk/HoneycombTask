@@ -2,9 +2,10 @@ import * as React from 'react';
 import { Form, Input, Button, Checkbox } from 'antd';
 import { UserOutlined, LockOutlined, IeOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-import { areaStyle, buttonStyle, inputStyle } from '../Styles/MainFieldStyle';
+import {areaStyle, inputStyle, buttonStyle} from '../Styles/MainFieldStyle'
 import { sendRegister } from '../Services/AuthorizationQuery';
 import FacebookAuthorization from './FacebookAuthorization';
+import '../Styles/ButtonStyle.css'
 
 
 
@@ -76,13 +77,11 @@ export default class Registration extends React.Component {
             </Form.Item>
 
             <Form.Item>
-              <Button style={buttonStyle} htmlType="submit">
+              <Button type="primary" className="buttonStyle" htmlType="submit">
                 <strong>REGISTRATION</strong>
               </Button >
               <br />
-              <FacebookAuthorization/>
-              <br /><br />
-              Or <Link to="/login">Log in!</Link>
+              <FacebookAuthorization/> Or <Link to="/login">login now!</Link>
               <br /><br />
             </Form.Item>
           </Form>

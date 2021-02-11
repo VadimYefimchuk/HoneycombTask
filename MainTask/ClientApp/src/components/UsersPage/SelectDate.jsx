@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { DatePicker, Space, TimePicker, Button } from 'antd';
-import { areaStyle, buttonStyle, inputStyle } from '../Styles/MainFieldStyle';
+import {areaStyle, inputStyle, buttonStyle} from '../Styles/MainFieldStyle'
 import { submitUserData, userData } from '../Services/UserQuery';
 import {openNotification} from '../Services/Notifications';
 import moment from 'moment';

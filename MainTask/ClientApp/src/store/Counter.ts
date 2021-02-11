@@ -1,5 +1,5 @@
 import { Action, Reducer } from 'redux';
-
+/*
 export interface CounterState {
     count: number;
 }
@@ -30,3 +30,4 @@ export const reducer: Reducer<CounterState> = (state: CounterState | undefined, 
             return state;
     }
 };
+*/

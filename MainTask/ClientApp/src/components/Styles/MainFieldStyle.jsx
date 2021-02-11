@@ -17,6 +17,8 @@ export const buttonStyle = {
     marginRight:"auto",
 };
 
+
+
 export const inputStyle = {
     width:"60%",
     textAlign:"center",

@@ -36,10 +36,10 @@ namespace MainTask.Controllers
 
         // GET: api/StudentsCourses/5
         [Authorize]
-        [HttpGet("{id}")]
-        public async Task<ActionResult<StudentsCourse>> GetStudentsCourse(int id)
+        [HttpGet("{studentId}")]
+        public async Task<ActionResult<IEnumerable<StudentsCourse>>> GetStudentsCourse(int studentId)
         {
-            var studentsCourse = await _context.StudentsCourses.FindAsync(id);
+            var studentsCourse = await _context.StudentsCourses.Where(x => x.StudentId == studentId).ToListAsync();
 
             if (studentsCourse == null)
             {

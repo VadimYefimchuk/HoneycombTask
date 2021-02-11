@@ -1,6 +1,7 @@
 import axios from 'axios';
 import {studentRegister} from './UserQuery'
 import {openNotification} from './Notifications'
+import { Redirect } from 'react-router-dom'
 
 
 export var url = window.location.href.replace(window.location.pathname, "");
@@ -59,7 +60,7 @@ export function getUserInfo() {
         age: res.data.age,
         registeredDate: res.data.registeredDate,
       }));
-
+      //<Redirect to="/courses" />
       window.location.href = "/courses";
     })
     .catch((error) => {
@@ -95,7 +96,7 @@ export function sendRegister(state){
   axios.post(url + "/api/authenticate/register", state)
   .then((res) => {
       console.log(res.data);
-      studentRegister(state);
+      openNotification('info', 'Alert!', 'Please confirm your email in your post box!');
   })
   .catch((error) => {
       console.error(error);

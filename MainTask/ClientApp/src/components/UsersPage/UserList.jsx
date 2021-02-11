@@ -9,7 +9,7 @@ import { useState } from 'react';
 import 'antd/dist/antd.css';
 import { Input, InputNumber, Popconfirm, Form, Typography, Modal, Button, DatePicker } from 'antd';
 import { UserOutlined, KeyOutlined } from '@ant-design/icons';
-import { areaStyle, buttonStyle, inputStyle, verticalTextAlign } from '../Styles/ProfileStyle';
+import {areaStyle, inputStyle, buttonStyle} from '../Styles/MainFieldStyle'
 import moment from 'moment';
 
 
@@ -72,6 +72,7 @@ export default class PersonList extends React.Component {
   constructor() {
     super();
     this.state = {
+      loadingTable: true,
       loading: false,
       persons: [],
       isModalVisible: false,
@@ -91,6 +92,7 @@ export default class PersonList extends React.Component {
     const persons = await getSearchStudents(this.state.currentPage, this.state.pageSize);
     this.setState({ dataCount: persons.count });
     this.setState({ persons: persons.data });
+    this.setState({ loadingTable: false });
   }
 
   currentUser = {};
@@ -132,7 +134,6 @@ export default class PersonList extends React.Component {
       this.setState({ currentPage: 1 });
     }
 
-    //openNotification('info', 'SEARCH!', 'Searching!', 1.5);
     this.onSearch(this.state.currentPage, this.state.pageSize, this.state.sortOrder, this.state.sortField, value);
   }
 
@@ -149,6 +150,13 @@ export default class PersonList extends React.Component {
         dataIndex: 1,
         sorter: (a, b) => a[1].localeCompare(b[1]),
         key: 1,
+      },
+      {
+        title: <strong>Start Date</strong>,
+        dataIndex: 2,
+        sorter: (a, b) => a[2].localeCompare(b[2]),
+        key: 2,
+        render: (date) => <a>{new Date(Date.parse(date)).toLocaleString()}</a>,
       },
     ]
 
@@ -238,6 +246,7 @@ export default class PersonList extends React.Component {
               rowExpandable: record => record.description.length !== 0,
             }}
             dataSource={this.state.persons}
+            loading={this.state.loadingTable}
           />
           <Modal
             footer={false}

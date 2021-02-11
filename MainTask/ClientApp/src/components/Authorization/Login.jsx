@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Form, Input, Button, Checkbox } from 'antd';
 import { Link } from 'react-router-dom';
 import { useHistory } from "react-router-dom";
-import { areaStyle, buttonStyle, inputStyle } from '../Styles/MainFieldStyle'
+import {areaStyle, inputStyle, buttonStyle} from '../Styles/MainFieldStyle'
 import { sendLogin, sendFacebookLogin } from '../Services/AuthorizationQuery'
 import { ApplicationState } from '../../store';
 import * as loginDataStore from '../../store/reducers/loginData';
@@ -12,12 +12,7 @@ import { RouteComponentProps } from 'react-router';
 import FacebookAuthorization from './FacebookAuthorization';
 
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-
-const BtnFacebook = `
-    width: 165px;
-    height:35px;  
-    border-radius: 4px;    
-`;
+import '../Styles/ButtonStyle.css'
 
 
 export default class Login extends React.Component {
@@ -43,8 +38,7 @@ export default class Login extends React.Component {
     return (
       <div style={areaStyle}>
         <h2>Login</h2>
-        <p>"username": "Vadim", "password": "Qwerty@123"</p>
-        <br />
+        <br/>
 
         <div style={inputStyle}>
           <Form
@@ -86,13 +80,11 @@ export default class Login extends React.Component {
             </Form.Item>
 
             <Form.Item>
-              <Button style={buttonStyle} htmlType="submit">
+              <Button type="primary" className = "buttonStyle" htmlType="submit">
                 <strong>LOG IN</strong>
               </Button >
               <br />
-              <FacebookAuthorization/>
-              <br /><br />
-              Or <Link to="/register">register now!</Link>
+              <FacebookAuthorization/> Or <Link to="/register">register now!</Link>
               <br /><br />
             </Form.Item>
           </Form>

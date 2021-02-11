@@ -1,11 +1,14 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Form, Input, Button, InputNumber } from 'antd';
-import { areaStyle, buttonStyle, inputStyle, verticalTextAlign } from '../Styles/ProfileStyle';
+import { Form, Input, Button, InputNumber, Result } from 'antd';
+import { areaStyle, inputStyle, buttonStyle } from '../Styles/MainFieldStyle'
 import { submitUserData, userData } from '../Services/UserQuery';
 import { openNotification } from '../Services/Notifications';
 import { UserOutlined, KeyOutlined } from '@ant-design/icons';
 import { updateUserInfo } from '../Services/AuthorizationQuery';
+import '../Styles/ButtonStyle.css'
+import { Link } from 'react-router-dom';
+
 
 
 
@@ -101,7 +104,7 @@ export default class Profile extends React.Component {
         </Form.Item>
 
         <Form.Item wrapperCol={{ span: 24 }}>
-          <Button style={buttonStyle} htmlType="submit">
+          <Button type="primary" className="buttonStyle" htmlType="submit">
             <strong>SAVE CHANGES</strong>
           </Button >
           <br /><br />
@@ -119,10 +122,13 @@ export default class Profile extends React.Component {
             ? <div>
               {this.profileField}
             </div>
-            : <div>
-              {window.location.href = "/login"}
-              <h1 className="text-white" style={{ "textAlign": "center" }} >Please AUTH (Profile page)!</h1>
-              <hr />
+            : <div style={areaStyle}>
+              <Result
+                status="404"
+                title="404"
+                subTitle="Sorry, the page you visited does not exist."
+                extra={<Button style={buttonStyle} type="primary"><Link to="/register">register now!</Link></Button>}
+              />
             </div>
         }
       </div>

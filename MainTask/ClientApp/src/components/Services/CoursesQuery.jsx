@@ -23,6 +23,22 @@ export async function getCourses() {
             openNotification('error', 'ERROR!', 'Courses are empty');
         });
 }
+export async function getStudentCourses() {
+    return axios.get(url + `/api/StudentsCourses/` + userData.id,
+        { headers: { "Authorization": "Bearer " + authData.token } })
+        .then(res => {
+            const allCourses = res.data.map(data => ({
+                key: data.id,
+                courseId: data.courseId,
+                studentId: data.studentId,
+            }))
+            return allCourses;
+        })
+        .catch((error) => {
+            console.error(error.message);
+            openNotification('error', 'ERROR!', 'Courses are empty');
+        });
+}
 
 export async function registerCourses(data) {
     return axios.put(url + `/api/StudentsCourses/` + userData.id,
