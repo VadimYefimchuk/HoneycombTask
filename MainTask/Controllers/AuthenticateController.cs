@@ -30,18 +30,25 @@ namespace JWTAuthentication.Controllers
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly IConfiguration _configuration;
         private readonly SignInManager<ApplicationUser> signInManager;
-        private readonly HttpClient httpClient;
+        private readonly IHttpClientFactory httpClientFactory;
         private readonly ApplicationDbContext _context;
         private readonly EmailSender emailSender;
         private readonly StudentsController studentsController;
 
-        public AuthenticateController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, SignInManager<ApplicationUser> signInManager, ApplicationDbContext context)
+        public AuthenticateController
+            (
+            UserManager<ApplicationUser> userManager, 
+            RoleManager<IdentityRole> roleManager, 
+            IConfiguration configuration, 
+            SignInManager<ApplicationUser> signInManager, 
+            ApplicationDbContext context,
+            IHttpClientFactory clientFactory)
         {
             this.userManager = userManager;
             this.roleManager = roleManager;
             _configuration = configuration;
             this.signInManager = signInManager;
-            httpClient = new HttpClient();
+            httpClientFactory = clientFactory;
             _context = context;
             emailSender = new EmailSender();
             studentsController = new StudentsController(_context);
@@ -53,9 +60,10 @@ namespace JWTAuthentication.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Facebook(FacebookUserModel facebookUserModel)
         {
+            var clientFactory = httpClientFactory.CreateClient();
             var url = "https://graph.facebook.com/me?access_token=" + facebookUserModel.AccessToken;
             HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, url);
-            HttpResponseMessage response = await httpClient.SendAsync(requestMessage);
+            HttpResponseMessage response = await clientFactory.SendAsync(requestMessage);
             if(response.StatusCode == HttpStatusCode.OK)
             {
                 var userExists = await userManager.FindByNameAsync(facebookUserModel.Email);
