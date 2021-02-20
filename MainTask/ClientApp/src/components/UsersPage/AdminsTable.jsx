@@ -1,17 +1,16 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import UserList from './UserList'
-import App from './test'
 import { Result, Button } from 'antd'
 import { Link } from 'react-router-dom';
-import { areaStyle, inputStyle, buttonStyle } from '../Styles/MainFieldStyle'
+import { areaStyle, buttonStyle } from '../Styles/MainFieldStyle'
 
 
-export default class AdminsTable extends React.Component {
+class AdminsTableComponent extends React.Component {
 
-  constructor() {
-    super();
-    this.authData = JSON.parse(localStorage.getItem('login'));
+  constructor(props) {
+    super(props);
+    this.authData = props.login;//JSON.parse(localStorage.getItem('login'));
   }
 
   mainStyle = {
@@ -43,7 +42,7 @@ export default class AdminsTable extends React.Component {
                   status="403"
                   title="403"
                   subTitle="Sorry, you are not authorized to access this page."
-                  extra={<Button  style={buttonStyle} type="primary"><Link to="/courses">Courses!</Link></Button>}
+                  extra={<Button style={buttonStyle} type="primary"><Link to="/courses">Courses!</Link></Button>}
                 />
               </div>
 
@@ -61,3 +60,17 @@ export default class AdminsTable extends React.Component {
   };
 }
 
+const AdminsTable = connect(
+  ({ login }) => {
+    return {
+      login: login.loginData
+    };
+  },
+  (dispatch) => {
+    return {
+
+    };
+  }
+)(AdminsTableComponent);
+
+export default AdminsTable

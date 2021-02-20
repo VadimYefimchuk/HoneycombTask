@@ -18,6 +18,8 @@ using FluentValidation.AspNetCore;
 using MainTask.DAL.Validators;
 using Hangfire;
 using MainTask.Services;
+using Microsoft.AspNetCore.Http;
+using MainTask.Middleware;
 
 namespace MainTask
 {
@@ -89,6 +91,11 @@ namespace MainTask
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.  
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
+
+            app.UseMiddleware<ErrorHandlingMiddleware>();
+
+
             app.UseCors(builder => {
                 builder.AllowAnyOrigin();
                 builder.AllowAnyMethod();
@@ -96,7 +103,6 @@ namespace MainTask
             });
             app.UseHttpsRedirection();
 
-            //////
             app.UseHangfireDashboard();
             app.UseHangfireServer();
 

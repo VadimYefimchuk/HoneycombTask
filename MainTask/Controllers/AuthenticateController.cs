@@ -293,7 +293,6 @@ namespace JWTAuthentication.Controllers
                 var checkConfirm = await userManager.ConfirmEmailAsync(user, Token);
                 await AddNewStudent(user.Email, user.UserName);
                 return "Email CONFIRMED";
-
             }
             else
             {

@@ -1,15 +1,11 @@
 import React from 'react'
+import { connect } from 'react-redux';
 import { getCourses, registerCourses, getStudentCourses } from '../Services/CoursesQuery'
 import { openNotification } from '../Services/Notifications'
-import { Carousel, Card, Button, Modal, DatePicker } from 'antd';
-import { Avatar } from 'antd';
-import { EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
+import { Carousel, Card, Button, Avatar, DatePicker, Result } from 'antd';
 import moment from 'moment';
-
-import { title } from 'process';
-import { Result } from 'antd';
 import '../Styles/ButtonStyle.css'
-import { areaStyle, inputStyle, buttonStyle, datePickerStyle } from '../Styles/MainFieldStyle'
+import { areaStyle, datePickerStyle } from '../Styles/MainFieldStyle'
 import { Link } from 'react-router-dom';
 
 
@@ -23,24 +19,27 @@ const contentStyle = {
     marginRight: "auto",
 };
 
-export default class Courses extends React.Component {
-    constructor() {
-        super();
+class CoursesComponent extends React.Component {
+    constructor(props) {
+        super(props);
         this.state = {
             courses: [],
             currentStudentsCourses: [],
             courseStartDate: new Date(),
         }
-        this.userData = JSON.parse(localStorage.getItem('userData'));
-        this.authData = JSON.parse(localStorage.getItem('login'));
+        this.userData = props.userData;
+        this.authData = props.login;
     }
 
     async componentDidMount() {
         if (this.authData.login) {
             var courses = await getCourses();
-            this.setState({ courses: courses });
+            //this.setState({ courses: courses });
             var currentStudentsCourses = await getStudentCourses();
-            this.setState({ currentStudentsCourses: currentStudentsCourses });
+            this.setState({ 
+                courses: courses, 
+                currentStudentsCourses: currentStudentsCourses 
+            });
         }
     }
 
@@ -151,3 +150,19 @@ export default class Courses extends React.Component {
         )
     }
 }
+
+const Courses = connect(
+    ({ login }) => {
+        return {
+            login: login.loginData,
+            userData: login.userData
+        };
+    },
+    (dispatch) => {
+        return {
+
+        };
+    }
+)(CoursesComponent);
+
+export default Courses

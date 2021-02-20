@@ -3,26 +3,23 @@ import { connect } from 'react-redux';
 import { Form, Input, Button, InputNumber, Result } from 'antd';
 import { areaStyle, inputStyle, buttonStyle } from '../Styles/MainFieldStyle'
 import { submitUserData, userData } from '../Services/UserQuery';
-import { openNotification } from '../Services/Notifications';
 import { UserOutlined, KeyOutlined } from '@ant-design/icons';
-import { updateUserInfo } from '../Services/AuthorizationQuery';
 import '../Styles/ButtonStyle.css'
 import { Link } from 'react-router-dom';
 
 
 
 
-export default class Profile extends React.Component {
+class ProfileComponent extends React.Component {
 
-  constructor() {
-    super();
-    this.authData = JSON.parse(localStorage.getItem('login'));
+  constructor(props) {
+    super(props);
+    this.authData = this.props.login;//JSON.parse(localStorage.getItem('login'));
   }
 
   profileField = <div style={areaStyle}>
     <h2>Your Profile</h2>
     <br />
-
     <div style={inputStyle}>
       <Form
         labelCol={{ span: 8 }}
@@ -136,5 +133,19 @@ export default class Profile extends React.Component {
   }
 }
 
+const Profile = connect(
+  ({ login }) => {
+    return {
+      login: login.loginData,
+      userData: login.userData
+    };
+  },
+  (dispatch) => {
+    return {
 
+    };
+  }
+)(ProfileComponent);
+
+export default Profile
 

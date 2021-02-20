@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Form, Input, Button, Checkbox } from 'antd';
 import { UserOutlined, LockOutlined, IeOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-import {areaStyle, inputStyle, buttonStyle} from '../Styles/MainFieldStyle'
+import { areaStyle, inputStyle, buttonStyle } from '../Styles/MainFieldStyle'
 import { sendRegister } from '../Services/AuthorizationQuery';
 import FacebookAuthorization from './FacebookAuthorization';
 import '../Styles/ButtonStyle.css'
@@ -30,7 +30,7 @@ export default class Registration extends React.Component {
         <div style={inputStyle}>
           <Form
             name="normal_login"
-            onFinish={() => {sendRegister(this.state)}}
+            onFinish={() => { sendRegister(this.state) }}
           >
             <Form.Item
               name="username"
@@ -81,7 +81,7 @@ export default class Registration extends React.Component {
                 <strong>REGISTRATION</strong>
               </Button >
               <br />
-              <FacebookAuthorization/> Or <Link to="/login">login now!</Link>
+              <FacebookAuthorization /> Or <Link to="/login">login now!</Link>
               <br /><br />
             </Form.Item>
           </Form>

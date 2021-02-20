@@ -1,5 +1,5 @@
 import React from 'react';
-import axios from 'axios';
+import { connect } from 'react-redux';
 import { Table, Row, Col, Pagination, Spin } from 'antd';
 import { EditFilled } from '@ant-design/icons'
 import { changeCurrentUser, getSearchStudents } from '../Services/UserQuery'
@@ -9,7 +9,7 @@ import { useState } from 'react';
 import 'antd/dist/antd.css';
 import { Input, InputNumber, Popconfirm, Form, Typography, Modal, Button, DatePicker } from 'antd';
 import { UserOutlined, KeyOutlined } from '@ant-design/icons';
-import {areaStyle, inputStyle, buttonStyle} from '../Styles/MainFieldStyle'
+import { areaStyle, inputStyle, buttonStyle } from '../Styles/MainFieldStyle'
 import moment from 'moment';
 
 
@@ -90,9 +90,13 @@ export default class PersonList extends React.Component {
 
   async componentDidMount() {
     const persons = await getSearchStudents(this.state.currentPage, this.state.pageSize);
-    this.setState({ dataCount: persons.count });
-    this.setState({ persons: persons.data });
-    this.setState({ loadingTable: false });
+    this.setState({
+      dataCount: persons.count,
+      persons: persons.data,
+      loadingTable: false
+    });
+    //this.setState({ persons: persons.data });
+    //this.setState({ loadingTable: false });
   }
 
   currentUser = {};
@@ -122,16 +126,23 @@ export default class PersonList extends React.Component {
 
   async onSearch(current, pageSize, sortOrder = null, sortField = null, value = null) {
     const fullPersons = await getSearchStudents(current, pageSize, value, sortOrder, sortField);
-    this.setState({ persons: fullPersons.data });
-    this.setState({ dataCount: fullPersons.count });
-    this.setState({loading: false});
+    this.setState({
+      persons: fullPersons.data,
+      dataCount: fullPersons.count,
+      loading: false
+    });
+    //this.setState({ dataCount: fullPersons.count });
+    //this.setState({loading: false});
   }
 
   onChangeSearch = (value) => {
-    this.setState({loading: true});
+    this.setState({ loading: true });
     if (value != this.state.searchData) {
-      this.setState({ searchData: value });
-      this.setState({ currentPage: 1 });
+      this.setState({
+        searchData: value,
+        currentPage: 1
+      });
+      //this.setState({ currentPage: 1 });
     }
 
     this.onSearch(this.state.currentPage, this.state.pageSize, this.state.sortOrder, this.state.sortField, value);
@@ -170,7 +181,7 @@ export default class PersonList extends React.Component {
   }
 
   onChangeTable = (pagination, filters, sorter, extra) => {
-    this.setState({loading: true});
+    this.setState({ loading: true });
     var sorterBy = null;
     if (sorter.order == 'ascend') {
       sorterBy = 'asc';
@@ -181,18 +192,21 @@ export default class PersonList extends React.Component {
 
     var sorterByField = sorter.field != undefined ? sorter.field.charAt(0).toUpperCase() + sorter.field.slice(1) : undefined
 
-    this.setState({ currentPage: pagination.current });
-    this.setState({ pageSize: pagination.pageSize });
-
-    this.setState({ sortOrder: sorterBy });
-    this.setState({ sortField: sorterByField });
+    this.setState({ 
+      currentPage: pagination.current,
+      pageSize: pagination.pageSize,
+      sortOrder: sorterBy,
+      sortField: sorterByField,
+     });
+    //this.setState({ pageSize: pagination.pageSize });
+    //this.setState({ sortOrder: sorterBy });
+    //this.setState({ sortField: sorterByField });
 
     this.onSearch(pagination.current, pagination.pageSize, sorterBy, sorterByField, this.state.searchData);
   }
 
   formRef = React.createRef();
   onReset = () => {
-    console.log("hi");
     this.formRef.current.resetFields();
   };
 

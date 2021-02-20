@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { sendLogin, getUserInfo } from './AuthorizationQuery';
+import { sendLogin } from './AuthorizationQuery';
 import { openNotification } from './Notifications';
 
 
@@ -48,8 +48,8 @@ export function changeCurrentUser(currentData) {
 }
 
 export async function getStudents(start, length) {
-    return axios.get(url + `/api/students?start=` + start + '&length=' + length, 
-    { headers: { "Authorization": "Bearer " + authData.token } })
+    return axios.get(url + `/api/students?start=` + start + '&length=' + length,
+        { headers: { "Authorization": "Bearer " + authData.token } })
         .then(res => {
             const newRes = res.data.data.map(data => ({
                 key: data.id,
@@ -68,22 +68,22 @@ export async function getStudents(start, length) {
                 ])),
             }))
             return {
-                data: newRes, 
+                data: newRes,
                 count: res.data.count
             };
         })
 }
 
-export async function getSearchStudents( currentPage, pageSize, searchString = null, sortOrder = null, sortField = null) {
+export async function getSearchStudents(currentPage, pageSize, searchString = null, sortOrder = null, sortField = null) {
     return axios.post(url + `/api/students/search`,
-    {
-        pageSize: pageSize,
-        currentPage: currentPage,
-        sortOrder: sortOrder,
-        sortField: sortField,
-        searchString: searchString
-    },
-    { headers: { "Authorization": "Bearer " + authData.token } })
+        {
+            pageSize: pageSize,
+            currentPage: currentPage,
+            sortOrder: sortOrder,
+            sortField: sortField,
+            searchString: searchString
+        },
+        { headers: { "Authorization": "Bearer " + authData.token } })
         .then(res => {
             const newRes = res.data.data.map(data => ({
                 key: data.id,
@@ -102,7 +102,7 @@ export async function getSearchStudents( currentPage, pageSize, searchString = n
                 ])),
             }))
             return {
-                data: newRes, 
+                data: newRes,
                 count: res.data.count
             };
         })

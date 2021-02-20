@@ -42,8 +42,8 @@ export async function getStudentCourses() {
 
 export async function registerCourses(data) {
     return axios.put(url + `/api/StudentsCourses/` + userData.id,
-    data,
-    { headers: { "Authorization": "Bearer " + authData.token } })
+        data,
+        { headers: { "Authorization": "Bearer " + authData.token } })
         .then(res => {
             openNotification('success', 'SUCCESS!', res.data.message);
         })

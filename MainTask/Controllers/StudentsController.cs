@@ -42,7 +42,6 @@ namespace MainTask.Controllers
         [HttpPost("Search")]
         public async Task<ActionResult<ResponceDataPage<IEnumerable<Student>>>> GetSearchStudents(SearchSettings searchSettings)
         {
-
             var students = _context.Students
                 .Include(w => w.StudentsCourses)
                 .ThenInclude(s => s.Course)
@@ -101,8 +100,6 @@ namespace MainTask.Controllers
         }
 
         // PUT: api/Students/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [Authorize]
         [HttpPut("{idCurrentUser}")]
         public async Task<IActionResult> PutStudent(int idCurrentUser, Student student)
@@ -134,8 +131,6 @@ namespace MainTask.Controllers
         }
 
         // POST: api/Students
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
         public async Task<ActionResult<Student>> PostStudent(Student student)
         {

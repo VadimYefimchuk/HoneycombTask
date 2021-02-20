@@ -31,8 +31,6 @@ namespace MainTask
                 }
                 catch (Exception ex)
                 {
-                    //var logger = services.GetRequiredService<ILogger<Program>>();
-                    //logger.LogError(ex, "An error occurred while seeding the database.");
                     var logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
                     logger.Error(ex, "An error occurred while seeding the database.");
                 }
@@ -50,12 +48,9 @@ namespace MainTask
                 try
                 {
                     var context = services.GetRequiredService<ApplicationDbContext>();
-                    //DbInitializer.Initialize(context);
                 }
                 catch (Exception ex)
                 {
-                    //var logger = services.GetRequiredService<ILogger<Program>>();
-                    //logger.LogError(ex, "An error occurred creating the DB.");
                     var logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
                     logger.Error(ex, "An error occurred creating the DB.");
                 }

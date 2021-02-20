@@ -48,8 +48,6 @@ namespace MainTask.Controllers
         }
 
         // PUT: api/Courses/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCourse(int id, Course course)
@@ -81,8 +79,6 @@ namespace MainTask.Controllers
         }
 
         // POST: api/Courses
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [Authorize]
         [HttpPost]
         public async Task<ActionResult<Course>> PostCourse(Course course)

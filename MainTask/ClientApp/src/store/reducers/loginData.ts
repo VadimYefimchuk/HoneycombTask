@@ -35,9 +35,8 @@ export const reducer: Reducer = (state: ILoginState | undefined, incomingAction:
     const action = incomingAction as KnownAction;
     switch (action.type) {
         case 'GET_LOGIN_DATA':
-            var logData = sendLogin(state);
             return {
-                logData
+                state//...action.payload.item
             };
         case 'CLEAR_LOGIN_DATA':
             return { 
